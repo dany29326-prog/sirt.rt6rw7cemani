@@ -1320,6 +1320,52 @@ td { padding:14px 16px; font-size:13px; border-bottom:1px solid var(--border); c
   @media(max-width: 550px) {
     .album-grid { grid-template-columns: 1fr; }
   }
+
+  /* Stabilization of Subpage Styles for Mobile */
+  .pub-page:not(#pub-beranda) .sec-title {
+    font-size: 22px;
+    font-weight: 800;
+    color: var(--text);
+    margin-bottom: 8px;
+    letter-spacing: -0.5px;
+  }
+  @media(max-width: 700px) {
+    .pub-page:not(#pub-beranda) .sec-title {
+      font-size: 19px;
+    }
+    .pub-page:not(#pub-beranda) .card {
+      padding: 16px !important;
+    }
+    .cek-iuran-box {
+      padding: 20px 16px !important;
+    }
+  }
+  @media(max-width: 600px) {
+    .surat-pub-grid {
+      grid-template-columns: repeat(2, 1fr) !important;
+      gap: 10px !important;
+    }
+    .surat-pub-card {
+      padding: 16px 10px !important;
+    }
+    .surat-pub-icon {
+      font-size: 24px !important;
+      margin-bottom: 6px !important;
+    }
+    .surat-pub-name {
+      font-size: 11px !important;
+    }
+  }
+  @media(max-width: 500px) {
+    .iuran-month-grid {
+      grid-template-columns: repeat(3, 1fr) !important;
+      gap: 6px !important;
+    }
+    .iuran-month-item {
+      padding: 10px 4px !important;
+      font-size: 11px !important;
+    }
+  }
 </style>
 </head>
 <body>
@@ -3770,16 +3816,21 @@ function renderPublicWarga() {
     const initials = getInitials(w.nama_kepala);
     const waClean = (w.no_wa || '').replace(/[^0-9]/g, '');
     const avatarGradient = getPremiumGradient(w.nama_kepala);
+    const badgeText = w.status === 'aktif' ? 'Warga Aktif' : 'Non-Aktif';
+    const badgeBg = w.status === 'aktif' ? 'var(--green-pale)' : '#fee2e2';
+    const badgeColor = w.status === 'aktif' ? 'var(--green-dark)' : '#991b1b';
+    
     html += `
       <div class="pengurus-card" style="margin-bottom: 0;">
         <div class="pengurus-avatar" style="background: ${avatarGradient}; flex-shrink: 0;">${escapeHtml(initials)}</div>
         <div class="pengurus-info" style="text-align: left;">
+          <div class="pengurus-role-badge" style="background: ${badgeBg}; color: ${badgeColor}; font-size: 9px; padding: 2px 6px; margin-bottom: 2px; text-transform: uppercase;">${badgeText}</div>
           <div class="pengurus-name" style="font-size: 14.5px; font-weight: 700; color: var(--text);">${escapeHtml(w.nama_kepala)}</div>
           <div class="pengurus-address" style="font-size: 11px; color: var(--text-light); margin-top: 3px; display: flex; align-items: center; gap: 4px;">📍 <span>${escapeHtml(w.alamat || 'Ngruki RT 06 / RW 17, Cemani')}</span></div>
         </div>
         ${waClean ? `
           <a class="pengurus-wa-btn" href="https://wa.me/${waClean}?text=Halo%20${encodeURIComponent(w.nama_kepala)}" target="_blank">
-            <span>💬</span> WA
+            <span>💬</span> Hubungi
           </a>
         ` : ''}
       </div>
