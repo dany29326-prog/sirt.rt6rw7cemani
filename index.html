@@ -1394,8 +1394,20 @@ td { padding:14px 16px; font-size:13px; border-bottom:1px solid var(--border); c
       <button class="pub-sidebar-link" onclick="showPubPage('polling')">🗳️ Musyawarah</button>
       <button class="pub-sidebar-link" onclick="showPubPage('pengurus')">👑 Pengurus RT</button>
       <button class="pub-sidebar-link" onclick="showPubPage('galeri')">📸 Galeri Kegiatan</button>
-      <div style="margin-top: auto; padding-top: 20px; border-top: 1px solid var(--border);">
-        <button class="admin-login-btn-sidebar" onclick="openLoginModal(); togglePublicSidebar();">🔐 Admin Panel</button>
+      <div style="margin-top: auto; padding-top: 20px; border-top: 1px solid var(--border); display: flex; flex-direction: column; gap: 12px;">
+        <button class="admin-login-btn-sidebar" onclick="openLoginModal(); togglePublicSidebar();" style="width: 100%;">🔐 Admin Panel</button>
+        <div class="visitor-counter" style="padding: 12px; background: rgba(255, 255, 255, 0.65); border: 1px solid var(--border); border-radius: 12px; font-size: 11px; color: var(--text-light);">
+          <div style="font-weight: 700; color: var(--text); margin-bottom: 6px; display: flex; align-items: center; gap: 4px;">📊 Info Kunjungan</div>
+          <div style="display: flex; justify-content: space-between; margin-bottom: 4px;">
+            <span>Hari Ini:</span> <span class="visit-daily" style="font-weight: 700; color: var(--text);">0</span>
+          </div>
+          <div style="display: flex; justify-content: space-between; margin-bottom: 4px;">
+            <span>Bulan Ini:</span> <span class="visit-monthly" style="font-weight: 700; color: var(--text);">0</span>
+          </div>
+          <div style="display: flex; justify-content: space-between;">
+            <span>Total Kunjungan:</span> <span class="visit-total" style="font-weight: 700; color: var(--green);">0</span>
+          </div>
+        </div>
       </div>
     </div>
   </aside>
@@ -1437,12 +1449,24 @@ td { padding:14px 16px; font-size:13px; border-bottom:1px solid var(--border); c
           <span class="pub-sidebar-icon">📸</span> Galeri Kegiatan
         </button>
       </nav>
-      <div class="pub-sidebar-footer">
+      <div class="pub-sidebar-footer" style="padding: 16px; border-top: 1px solid var(--border); display: flex; flex-direction: column; gap: 12px;">
         <div class="user-card" style="background: var(--green-pale); border: 1px solid rgba(5, 150, 105, 0.15); width: 100%; display: flex; align-items: center; gap: 10px; padding: 10px; border-radius: 12px;">
           <div class="user-av" style="background: var(--green); color: #fff; width: 34px; height: 34px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 700;">W</div>
           <div>
             <div class="user-name" style="font-size: 13px; font-weight: 600; color: var(--text);">Warga RT 06</div>
             <div class="user-role" style="font-size: 10px; color: var(--text-light);">Ngruki Cemani</div>
+          </div>
+        </div>
+        <div class="visitor-counter" style="padding: 12px; background: rgba(255, 255, 255, 0.65); border: 1px solid var(--border); border-radius: 12px; font-size: 11px; color: var(--text-light);">
+          <div style="font-weight: 700; color: var(--text); margin-bottom: 6px; display: flex; align-items: center; gap: 4px;">📊 Info Kunjungan</div>
+          <div style="display: flex; justify-content: space-between; margin-bottom: 4px;">
+            <span>Hari Ini:</span> <span class="visit-daily" style="font-weight: 700; color: var(--text);">0</span>
+          </div>
+          <div style="display: flex; justify-content: space-between; margin-bottom: 4px;">
+            <span>Bulan Ini:</span> <span class="visit-monthly" style="font-weight: 700; color: var(--text);">0</span>
+          </div>
+          <div style="display: flex; justify-content: space-between;">
+            <span>Total Kunjungan:</span> <span class="visit-total" style="font-weight: 700; color: var(--green);">0</span>
           </div>
         </div>
       </div>
@@ -4045,8 +4069,66 @@ async function loadPublicData(){
 
     // Render public charts
     renderPublicCharts();
+    
+    // Initialize visitor counter stats
+    await initVisitorCounter();
   } catch (error) {
     console.error('Gagal memuat data awal:', error.message);
+  }
+}
+
+async function initVisitorCounter() {
+  try {
+    let stats = { total: 0, daily: 0, monthly: 0, last_day: '', last_month: '' };
+    
+    if (appSettings['visitor_stats']) {
+      try {
+        stats = JSON.parse(appSettings['visitor_stats']);
+      } catch (e) {
+        console.error('Failed to parse visitor_stats JSON:', e);
+      }
+    }
+    
+    const now = new Date();
+    const todayStr = now.getFullYear() + '-' + String(now.getMonth() + 1).padStart(2, '0') + '-' + String(now.getDate()).padStart(2, '0');
+    const thisMonthStr = now.getFullYear() + '-' + String(now.getMonth() + 1).padStart(2, '0');
+    
+    const hasVisited = sessionStorage.getItem('pub_visited');
+    
+    if (!hasVisited) {
+      sessionStorage.setItem('pub_visited', 'true');
+      
+      stats.total = (stats.total || 0) + 1;
+      
+      if (stats.last_day === todayStr) {
+        stats.daily = (stats.daily || 0) + 1;
+      } else {
+        stats.daily = 1;
+        stats.last_day = todayStr;
+      }
+      
+      if (stats.last_month === thisMonthStr) {
+        stats.monthly = (stats.monthly || 0) + 1;
+      } else {
+        stats.monthly = 1;
+        stats.last_month = thisMonthStr;
+      }
+      
+      const statsJsonStr = JSON.stringify(stats);
+      const { data: checkData } = await supabase.from('setelan').select('id').eq('kunci', 'visitor_stats');
+      if (checkData && checkData.length > 0) {
+        await supabase.from('setelan').update({ nilai: statsJsonStr }).eq('kunci', 'visitor_stats');
+      } else {
+        await supabase.from('setelan').insert([{ kunci: 'visitor_stats', nilai: statsJsonStr }]);
+      }
+    }
+    
+    document.querySelectorAll('.visit-daily').forEach(el => el.textContent = stats.daily || 0);
+    document.querySelectorAll('.visit-monthly').forEach(el => el.textContent = stats.monthly || 0);
+    document.querySelectorAll('.visit-total').forEach(el => el.textContent = stats.total || 0);
+    
+  } catch (err) {
+    console.error('Error in visitor counter:', err);
   }
 }
 
