@@ -3814,7 +3814,6 @@ function renderPublicWarga() {
   let html = '';
   filteredWarga.forEach(w => {
     const initials = getInitials(w.nama_kepala);
-    const waClean = (w.no_wa || '').replace(/[^0-9]/g, '');
     const avatarGradient = getPremiumGradient(w.nama_kepala);
     const badgeText = w.status === 'aktif' ? 'Warga Aktif' : 'Non-Aktif';
     const badgeBg = w.status === 'aktif' ? 'var(--green-pale)' : '#fee2e2';
@@ -3828,11 +3827,6 @@ function renderPublicWarga() {
           <div class="pengurus-name" style="font-size: 14.5px; font-weight: 700; color: var(--text);">${escapeHtml(w.nama_kepala)}</div>
           <div class="pengurus-address" style="font-size: 11px; color: var(--text-light); margin-top: 3px; display: flex; align-items: center; gap: 4px;">📍 <span>${escapeHtml(w.alamat || 'Ngruki RT 06 / RW 17, Cemani')}</span></div>
         </div>
-        ${waClean ? `
-          <a class="pengurus-wa-btn" href="https://wa.me/${waClean}?text=Halo%20${encodeURIComponent(w.nama_kepala)}" target="_blank">
-            <span>💬</span> Hubungi
-          </a>
-        ` : ''}
       </div>
     `;
   });
