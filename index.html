@@ -1366,6 +1366,36 @@ td { padding:14px 16px; font-size:13px; border-bottom:1px solid var(--border); c
       font-size: 11px !important;
     }
   }
+
+  /* Inventaris Styles */
+  .inventaris-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+  .inventaris-card { background: #fff; border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow); display: flex; flex-direction: column; transition: transform 0.2s, box-shadow 0.2s; }
+  .inventaris-card:hover { transform: translateY(-4px); box-shadow: 0 12px 24px rgba(0, 0, 0, 0.08); }
+  .inventaris-card-header { background: linear-gradient(135deg, #059669 0%, #065f46 100%); padding: 16px; color: #fff; font-weight: 700; font-size: 14px; position: relative; }
+  .inventaris-card-body { padding: 18px; display: flex; flex-direction: column; flex: 1; gap: 10px; }
+  .inventaris-card-title { font-size: 16px; font-weight: 800; color: var(--text); }
+  .inventaris-card-desc { font-size: 12px; color: var(--text-light); line-height: 1.5; flex: 1; }
+  .inventaris-meta-item { font-size: 11px; font-weight: 600; color: var(--text-muted); display: flex; align-items: center; gap: 6px; }
+  .inventaris-meta-value { color: var(--text); font-weight: 700; }
+  
+  .badge-kondisi { display: inline-block; padding: 2px 8px; border-radius: 100px; font-size: 10px; font-weight: 700; text-transform: uppercase; }
+  .badge-kondisi.baik { background: var(--green-pale); color: var(--green-dark); }
+  .badge-kondisi.perbaikan { background: #ffedd5; color: #ea580c; }
+  .badge-kondisi.rusak { background: #fee2e2; color: #991b1b; }
+  
+  /* Admin Tab Styles */
+  .admin-tab-container { display: flex; gap: 8px; border-bottom: 2.5px solid var(--border); margin-bottom: 20px; padding-bottom: 2px; }
+  .admin-tab-btn { background: none; border: none; border-bottom: 3px solid transparent; padding: 8px 16px; font-size: 14px; font-weight: 700; color: var(--text-light); cursor: pointer; transition: all 0.2s; margin-bottom: -5px; }
+  .admin-tab-btn.active { color: var(--green); border-bottom-color: var(--green); }
+  .admin-tab-content { display: none; }
+  .admin-tab-content.active { display: block; }
+  
+  @media(max-width: 900px) {
+    .inventaris-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+  @media(max-width: 550px) {
+    .inventaris-grid { grid-template-columns: 1fr; }
+  }
 </style>
 </head>
 <body>
@@ -1394,6 +1424,7 @@ td { padding:14px 16px; font-size:13px; border-bottom:1px solid var(--border); c
       <button class="pub-sidebar-link" onclick="showPubPage('polling')">🗳️ Musyawarah</button>
       <button class="pub-sidebar-link" onclick="showPubPage('pengurus')">👑 Pengurus RT</button>
       <button class="pub-sidebar-link" onclick="showPubPage('galeri')">📸 Galeri Kegiatan</button>
+      <button class="pub-sidebar-link" onclick="showPubPage('inventaris')">📦 Inventaris RT</button>
       <div style="margin-top: auto; padding-top: 20px; border-top: 1px solid var(--border); display: flex; flex-direction: column; gap: 12px;">
         <button class="admin-login-btn-sidebar" onclick="openLoginModal(); togglePublicSidebar();" style="width: 100%;">🔐 Admin Panel</button>
         <div class="visitor-counter" style="padding: 12px; background: rgba(255, 255, 255, 0.65); border: 1px solid var(--border); border-radius: 12px; font-size: 11px; color: var(--text-light);">
@@ -1447,6 +1478,9 @@ td { padding:14px 16px; font-size:13px; border-bottom:1px solid var(--border); c
         </button>
         <button class="pub-sidebar-item" onclick="showPubPage('galeri', this)">
           <span class="pub-sidebar-icon">📸</span> Galeri Kegiatan
+        </button>
+        <button class="pub-sidebar-item" onclick="showPubPage('inventaris', this)">
+          <span class="pub-sidebar-icon">📦</span> Inventaris RT
         </button>
       </nav>
       <div class="pub-sidebar-footer" style="padding: 16px; border-top: 1px solid var(--border); display: flex; flex-direction: column; gap: 12px;">
@@ -1564,6 +1598,7 @@ td { padding:14px 16px; font-size:13px; border-bottom:1px solid var(--border); c
         <div class="quick-card" onclick="showPubPage('polling')" style="display: flex; gap: 14px; align-items: center; text-align: left; padding: 18px 20px; cursor: pointer;"><div class="quick-icon" style="font-size: 24px; margin-bottom: 0;">🗳️</div><div><div class="quick-title" style="font-size: 14.5px; font-weight: 700;">Musyawarah</div><div class="quick-desc" style="font-size: 11px; margin-top: 2px;">Jajak pendapat & voting warga</div></div></div>
         <div class="quick-card" onclick="showPubPage('pengurus')" style="display: flex; gap: 14px; align-items: center; text-align: left; padding: 18px 20px; cursor: pointer;"><div class="quick-icon" style="font-size: 24px; margin-bottom: 0;">👑</div><div><div class="quick-title" style="font-size: 14.5px; font-weight: 700;">Pengurus RT</div><div class="quick-desc" style="font-size: 11px; margin-top: 2px;">Profil & kontak pengurus RT 06</div></div></div>
         <div class="quick-card" onclick="showPubPage('galeri')" style="display: flex; gap: 14px; align-items: center; text-align: left; padding: 18px 20px; cursor: pointer;"><div class="quick-icon" style="font-size: 24px; margin-bottom: 0;">📸</div><div><div class="quick-title" style="font-size: 14.5px; font-weight: 700;">Galeri Kegiatan</div><div class="quick-desc" style="font-size: 11px; margin-top: 2px;">Dokumentasi & foto kegiatan RT</div></div></div>
+        <div class="quick-card" onclick="showPubPage('inventaris')" style="display: flex; gap: 14px; align-items: center; text-align: left; padding: 18px 20px; cursor: pointer;"><div class="quick-icon" style="font-size: 24px; margin-bottom: 0;">📦</div><div><div class="quick-title" style="font-size: 14.5px; font-weight: 700;">Inventaris RT</div><div class="quick-desc" style="font-size: 11px; margin-top: 2px;">Daftar & pinjam aset barang RT</div></div></div>
         <div class="quick-card" onclick="openWAFab()" style="display: flex; gap: 14px; align-items: center; text-align: left; padding: 18px 20px; cursor: pointer;"><div class="quick-icon" style="font-size: 24px; margin-bottom: 0;">💬</div><div><div class="quick-title" style="font-size: 14.5px; font-weight: 700;">Aduan Warga</div><div class="quick-desc" style="font-size: 11px; margin-top: 2px;">Laporkan keluhan ke Ketua RT</div></div></div>
       </div>
       <div class="agenda-grid">
@@ -1698,6 +1733,25 @@ td { padding:14px 16px; font-size:13px; border-bottom:1px solid var(--border); c
     </div>
   </div>
 
+  <!-- PUBLIC PAGE: INVENTARIS RT -->
+  <div class="pub-page" id="pub-inventaris">
+    <div class="pub-content">
+      <button class="back-to-home-btn" onclick="showPubPage('beranda')">← Kembali ke Beranda</button>
+      <div class="sec-title">📦 Inventaris & Aset RT 06</div>
+      <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 24px; margin-top: -10px;">
+        Berikut daftar inventaris barang milik RT 06 Ngruki Cemani yang dapat dipinjam oleh warga. Silakan ajukan pinjam online di bawah ini.
+      </p>
+      
+      <div style="display: flex; justify-content: flex-end; margin-bottom: 20px;">
+        <button class="btn-cek" onclick="openPinjamBarangModal()" style="width: auto; padding: 10px 20px; font-size: 13px; font-weight: 700; border-radius: 10px;">📋 Form Ajukan Pinjam Barang</button>
+      </div>
+
+      <div class="inventaris-grid" id="public-inventaris-grid">
+        <!-- Will be rendered via JS -->
+      </div>
+    </div>
+  </div>
+
     </div> <!-- Close pub-main-content -->
   </div> <!-- Close pub-desktop-wrapper -->
 
@@ -1760,6 +1814,13 @@ td { padding:14px 16px; font-size:13px; border-bottom:1px solid var(--border); c
           <div class="pub-sheet-btn-desc">Dokumentasi momen kebersamaan warga RT 06</div>
         </div>
       </button>
+      <button class="pub-sheet-btn" onclick="handleSheetAction('inventaris')">
+        <span class="pub-sheet-btn-icon">📦</span>
+        <div>
+          <div class="pub-sheet-btn-title">Inventaris & Pinjam Aset</div>
+          <div class="pub-sheet-btn-desc">Lihat ketersediaan barang dan ajukan pinjam online</div>
+        </div>
+      </button>
       <button class="pub-sheet-btn" onclick="handleSheetAction('wa')">
         <span class="pub-sheet-btn-icon" style="background: #25d366; color: #fff; font-size: 20px; font-weight: bold; display: flex; align-items: center; justify-content: center; height: 100%;">💬</span>
         <div>
@@ -1793,6 +1854,48 @@ td { padding:14px 16px; font-size:13px; border-bottom:1px solid var(--border); c
     <div class="login-hint-text">Gunakan username: admin | password: 12345678</div>
   </div>
 </div>
+<!-- PUBLIC MODAL: PINJAM BARANG -->
+<div class="add-modal-overlay" id="pinjam-barang-modal">
+  <div class="add-modal">
+    <div class="add-modal-title">📋 Formulir Pinjam Barang</div>
+    <div class="modal-grid" style="grid-template-columns: 1fr;">
+      <div>
+        <label class="form-label" style="font-weight:600;margin-bottom:4px;display:block;">Nama Lengkap Anda</label>
+        <input id="pinjam-nama" placeholder="Contoh: Bpk. H. Mulyono">
+      </div>
+      <div>
+        <label class="form-label" style="font-weight:600;margin-bottom:4px;display:block;">No. WhatsApp Aktif</label>
+        <input id="pinjam-wa" placeholder="Contoh: 62812345678">
+      </div>
+      <div>
+        <label class="form-label" style="font-weight:600;margin-bottom:4px;display:block;">Pilih Barang</label>
+        <select id="pinjam-barang-select" style="width: 100%; border: 1px solid var(--border); border-radius: 8px; padding: 10px; font-family: inherit; font-size: 13px; outline: none; background: #fff;"></select>
+      </div>
+      <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+        <div>
+          <label class="form-label" style="font-weight:600;margin-bottom:4px;display:block;">Jumlah Pinjam</label>
+          <input type="number" id="pinjam-jumlah" min="1" value="1">
+        </div>
+        <div>
+          <label class="form-label" style="font-weight:600;margin-bottom:4px;display:block;">Tanggal Pinjam</label>
+          <input type="date" id="pinjam-tanggal">
+        </div>
+      </div>
+      <div>
+        <label class="form-label" style="font-weight:600;margin-bottom:4px;display:block;">Rencana Tanggal Kembali</label>
+        <input type="date" id="pinjam-tanggal-kembali">
+      </div>
+      <div>
+        <label class="form-label" style="font-weight:600;margin-bottom:4px;display:block;">Keperluan</label>
+        <textarea id="pinjam-keterangan" rows="2" placeholder="Keperluan peminjaman barang..." style="width: 100%; border: 1px solid var(--border); border-radius: 8px; padding: 10px; font-family: inherit; font-size: 13px; outline: none; transition: border 0.2s; resize: vertical;"></textarea>
+      </div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="closePinjamBarangModal()">Batal</button>
+      <button class="btn-save" onclick="kirimPengajuanPinjam()">Ajukan Pinjam</button>
+    </div>
+  </div>
+</div>
 </div> <!-- /public-shell -->
 
 <!-- ADMIN SHELL -->
@@ -1814,6 +1917,7 @@ td { padding:14px 16px; font-size:13px; border-bottom:1px solid var(--border); c
       <div class="nav-item" onclick="showAdminPage('polling',this)"><span class="nav-icon">🗳️</span>Polling Warga</div>
       <div class="nav-item" onclick="showAdminPage('surat',this)"><span class="nav-icon">📋</span>Surat</div>
       <div class="nav-item" onclick="showAdminPage('galeri',this)"><span class="nav-icon">📸</span>Kelola Galeri</div>
+      <div class="nav-item" onclick="showAdminPage('inventaris',this)"><span class="nav-icon">📦</span>Kelola Inventaris</div>
       <div class="nav-item" onclick="showAdminPage('setelan',this)"><span class="nav-icon">⚙️</span>Pengaturan</div>
     </nav>
     <div class="sidebar-footer"><div class="user-card"><div class="user-av">AD</div><div><div class="user-name">Admin RT</div><div class="user-role">Pengurus RT 06</div></div><button class="logout-btn" onclick="doAdminLogout()">⎋</button></div></div>
@@ -2111,6 +2215,68 @@ td { padding:14px 16px; font-size:13px; border-bottom:1px solid var(--border); c
         </div>
       </div>
 
+      <div class="a-page" id="a-inventaris">
+        <div class="page-header">
+          <div>
+            <h2>Kelola Inventaris & Aset RT</h2>
+            <p>Manajemen data barang inventaris RT dan pencatatan peminjaman warga</p>
+          </div>
+          <button class="btn-add" onclick="openTambahBarangModal()">+ Tambah Barang</button>
+        </div>
+        
+        <div class="admin-tab-container">
+          <button class="admin-tab-btn active" id="tab-btn-barang" onclick="switchInventarisTab('barang')">📦 Daftar Barang</button>
+          <button class="admin-tab-btn" id="tab-btn-pinjam" onclick="switchInventarisTab('pinjam')">📋 Catatan Peminjaman</button>
+        </div>
+
+        <!-- Tab 1: Daftar Barang -->
+        <div class="admin-tab-content active" id="tab-content-barang">
+          <div class="card">
+            <div class="table-responsive">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Nama Barang</th>
+                    <th>Stok (Tersedia / Total)</th>
+                    <th>Lokasi Penyimpanan</th>
+                    <th>Kondisi</th>
+                    <th>Keterangan</th>
+                    <th>Aksi</th>
+                  </tr>
+                </thead>
+                <tbody id="barang-table-body">
+                  <tr><td colspan="6">Memuat data barang...</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tab 2: Catatan Peminjaman -->
+        <div class="admin-tab-content" id="tab-content-pinjam">
+          <div class="card">
+            <div class="table-responsive">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Peminjam</th>
+                    <th>Barang</th>
+                    <th>Jumlah</th>
+                    <th>Tanggal Pinjam</th>
+                    <th>Rencana Kembali</th>
+                    <th>Status</th>
+                    <th>Aksi</th>
+                  </tr>
+                </thead>
+                <tbody id="pinjam-table-body">
+                  <tr><td colspan="7">Memuat catatan peminjaman...</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
       <div class="a-page" id="a-setelan">
         <div class="page-header">
           <div>
@@ -2290,6 +2456,46 @@ td { padding:14px 16px; font-size:13px; border-bottom:1px solid var(--border); c
   </div>
 </div>
 
+<!-- ADMIN MODAL: KELOLA BARANG -->
+<div class="add-modal-overlay" id="barang-modal">
+  <div class="add-modal">
+    <div class="add-modal-title" id="barang-modal-title">📦 Tambah Barang Inventaris</div>
+    <input type="hidden" id="barang-id">
+    <div class="modal-grid" style="grid-template-columns: 1fr;">
+      <div>
+        <label class="form-label" style="font-weight:600;margin-bottom:4px;display:block;">Nama Barang</label>
+        <input id="barang-nama" placeholder="Contoh: Kursi Lipat Hitam">
+      </div>
+      <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+        <div>
+          <label class="form-label" style="font-weight:600;margin-bottom:4px;display:block;">Jumlah Total Stok</label>
+          <input type="number" id="barang-jumlah-total" min="1" value="1">
+        </div>
+        <div>
+          <label class="form-label" style="font-weight:600;margin-bottom:4px;display:block;">Kondisi</label>
+          <select id="barang-kondisi" style="width: 100%; border: 1px solid var(--border); border-radius: 8px; padding: 10px; font-family: inherit; font-size: 13px; outline: none; background: #fff;">
+            <option value="Baik">Baik</option>
+            <option value="Perbaikan">Perbaikan</option>
+            <option value="Rusak">Rusak</option>
+          </select>
+        </div>
+      </div>
+      <div>
+        <label class="form-label" style="font-weight:600;margin-bottom:4px;display:block;">Lokasi Penyimpanan</label>
+        <input id="barang-lokasi" placeholder="Contoh: Gudang RT (Belakang Pos Ronda)">
+      </div>
+      <div>
+        <label class="form-label" style="font-weight:600;margin-bottom:4px;display:block;">Keterangan / Deskripsi</label>
+        <textarea id="barang-keterangan" rows="3" placeholder="Keterangan tambahan barang..." style="width: 100%; border: 1px solid var(--border); border-radius: 8px; padding: 10px; font-family: inherit; font-size: 13px; outline: none; transition: border 0.2s; resize: vertical;"></textarea>
+      </div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="closeBarangModal()">Batal</button>
+      <button class="btn-save" onclick="simpanBarang()">Simpan</button>
+    </div>
+  </div>
+</div>
+
 <!-- TOAST -->
 <div class="toast" id="toast">✅ <span id="toast-msg"></span></div>
 
@@ -2309,6 +2515,7 @@ let allAgenda = [], filteredAgenda = [];
 let allPolling = [], allVotes = [];
 let allPengurus = [];
 let allGaleri = [];
+let allInventaris = [], allPinjam = [], currentInventarisTab = 'barang';
 let currentIuranView = 'bulanan';
 let currentIuranYear = 2025;
 let pubIuranChart = null, pubKasChart = null, admIuranChart = null, admKasChart = null;
@@ -2836,6 +3043,8 @@ document.getElementById('agenda-modal')?.addEventListener('click',function(e){if
 document.getElementById('polling-modal')?.addEventListener('click',function(e){if(e.target===this)closePollingModal();});
 document.getElementById('pengurus-modal')?.addEventListener('click',function(e){if(e.target===this)closePengurusModal();});
 document.getElementById('galeri-modal')?.addEventListener('click',function(e){if(e.target===this)closeGaleriModal();});
+document.getElementById('barang-modal')?.addEventListener('click',function(e){if(e.target===this)closeBarangModal();});
+document.getElementById('pinjam-barang-modal')?.addEventListener('click',function(e){if(e.target===this)closePinjamBarangModal();});
 
 async function doAdminLogin() {
   const username = document.getElementById('login-username')?.value;
@@ -2935,12 +3144,13 @@ function showAdminPage(name,el){
   }
   document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active')); 
   if (el) el.classList.add('active'); 
-  const titles={dashboard:'Dashboard',warga:'Data Warga',pengurus_rt:'Pengurus RT',iuran:'Iuran Bulanan',kas:'Kas RT',pengumuman:'Pengumuman',agenda:'Agenda & Ronda',polling:'Polling Warga',surat:'Surat',galeri:'Kelola Galeri Kegiatan',setelan:'Pengaturan'}; 
+  const titles={dashboard:'Dashboard',warga:'Data Warga',pengurus_rt:'Pengurus RT',iuran:'Iuran Bulanan',kas:'Kas RT',pengumuman:'Pengumuman',agenda:'Agenda & Ronda',polling:'Polling Warga',surat:'Surat',galeri:'Kelola Galeri Kegiatan',inventaris:'Kelola Inventaris & Aset RT',setelan:'Pengaturan'}; 
   document.getElementById('admin-title').textContent=titles[name] || 'Admin'; 
   if (name === 'setelan') populateSettingsInputs();
   if (name === 'pengurus_rt') renderPengurusTable();
   if (name === 'surat') renderSuratTable();
   if (name === 'galeri') renderAdminGaleri();
+  if (name === 'inventaris') renderAdminInventaris();
 
   // Close mobile sidebar if open
   const sidebar = document.querySelector('.sidebar');
@@ -3023,6 +3233,7 @@ function showPubPage(name){
   if (name === 'warga') renderPublicWarga();
   if (name === 'pengurus') renderPublicPengurus();
   if (name === 'galeri') renderPublicGaleri();
+  if (name === 'inventaris') renderPublicInventaris();
   
   // Close mobile sidebar if open
   const sidebar = document.getElementById('pub-sidebar');
@@ -4032,9 +4243,11 @@ async function loadPublicData(){
     await loadKas();
     await loadPengajuanSurat();
     await loadGaleriFromSettings();
+    await loadInventaris();
 
     renderPublicWarga();
     renderPublicPengurus();
+    renderPublicInventaris();
     
     // Set dynamic live stats values
     const statWarga = document.getElementById('pub-stat-warga');
@@ -4320,6 +4533,445 @@ async function hapusGaleri(id) {
       showToast('Album galeri berhasil dihapus!');
       await renderAdminGaleri();
     }
+  }
+}
+
+/* INVENTARIS & PEMINJAMAN ASET FUNCTIONS */
+async function loadInventaris() {
+  if (!supabase) return;
+  try {
+    const { data, error } = await supabase
+      .from('inventaris')
+      .select('*')
+      .order('nama_barang', { ascending: true });
+    if (error) throw error;
+    allInventaris = data || [];
+  } catch (err) {
+    console.error('Error loading inventaris:', err.message);
+  }
+}
+
+async function loadPinjamData() {
+  if (!supabase) return;
+  try {
+    const { data, error } = await supabase
+      .from('inventaris_pinjam')
+      .select('*, inventaris(*)')
+      .order('created_at', { ascending: false });
+    if (error) throw error;
+    allPinjam = data || [];
+  } catch (err) {
+    console.error('Error loading pinjam data:', err.message);
+  }
+}
+
+async function renderPublicInventaris() {
+  const grid = document.getElementById('public-inventaris-grid');
+  if (!grid) return;
+  
+  if (allInventaris.length === 0) {
+    grid.innerHTML = '<div style="grid-column: 1/-1; text-align: center; padding: 40px; color: var(--text-light); font-weight: 600;">Belum ada data barang inventaris yang tersedia saat ini.</div>';
+    return;
+  }
+  
+  grid.innerHTML = allInventaris.map(item => {
+    let kondisiClass = 'baik';
+    if (item.kondisi === 'Perbaikan') kondisiClass = 'perbaikan';
+    else if (item.kondisi === 'Rusak') kondisiClass = 'rusak';
+    
+    const stokTersedia = item.jumlah_tersedia;
+    const stokTotal = item.jumlah_total;
+    const isAda = stokTersedia > 0;
+    
+    return `
+      <div class="inventaris-card">
+        <div class="inventaris-card-header">
+          📦 ASET RT 06
+        </div>
+        <div class="inventaris-card-body">
+          <div class="inventaris-card-title">${escapeHtml(item.nama_barang)}</div>
+          <div class="inventaris-card-desc">${escapeHtml(item.keterangan || 'Tidak ada deskripsi barang.')}</div>
+          <div class="inventaris-meta-item">
+            📍 Lokasi: <span class="inventaris-meta-value">${escapeHtml(item.lokasi || '-')}</span>
+          </div>
+          <div class="inventaris-meta-item">
+            🔧 Kondisi: <span class="badge-kondisi ${kondisiClass}">${escapeHtml(item.kondisi)}</span>
+          </div>
+          <div class="inventaris-meta-item">
+            🔢 Tersedia: <span class="inventaris-meta-value" style="font-size: 13.5px; color: ${isAda ? 'var(--green)' : 'var(--red)'};">${stokTersedia} / ${stokTotal}</span>
+          </div>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+async function renderAdminInventaris() {
+  await loadInventaris();
+  await loadPinjamData();
+  
+  if (currentInventarisTab === 'barang') {
+    const tbody = document.getElementById('barang-table-body');
+    if (!tbody) return;
+    
+    if (allInventaris.length === 0) {
+      tbody.innerHTML = '<tr><td colspan="6" style="text-align: center; padding: 20px; color: var(--text-light);">Belum ada barang inventaris. Klik + Tambah Barang untuk memulai.</td></tr>';
+      return;
+    }
+    
+    tbody.innerHTML = allInventaris.map(item => {
+      let kondisiClass = 'baik';
+      if (item.kondisi === 'Perbaikan') kondisiClass = 'perbaikan';
+      else if (item.kondisi === 'Rusak') kondisiClass = 'rusak';
+      
+      return `
+        <tr>
+          <td><b>${escapeHtml(item.nama_barang)}</b></td>
+          <td style="font-weight: 700;">${item.jumlah_tersedia} / ${item.jumlah_total}</td>
+          <td>${escapeHtml(item.lokasi || '-')}</td>
+          <td><span class="badge-kondisi ${kondisiClass}">${escapeHtml(item.kondisi)}</span></td>
+          <td style="font-size: 12px; color: var(--text-muted); max-width: 200px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${escapeHtml(item.keterangan || '-')}</td>
+          <td>
+            <div style="display: flex; gap: 8px;">
+              <button class="icon-btn edit" onclick="editBarang(${item.id})" style="background: #3b82f6; color: #fff; padding: 6px 10px; border-radius: 6px; border: none; cursor: pointer;">✏️</button>
+              <button class="icon-btn danger" onclick="hapusBarang(${item.id})" style="background: var(--red); color: #fff; padding: 6px 10px; border-radius: 6px; border: none; cursor: pointer;">🗑️</button>
+            </div>
+          </td>
+        </tr>
+      `;
+    }).join('');
+  } else {
+    const tbody = document.getElementById('pinjam-table-body');
+    if (!tbody) return;
+    
+    if (allPinjam.length === 0) {
+      tbody.innerHTML = '<tr><td colspan="7" style="text-align: center; padding: 20px; color: var(--text-light);">Belum ada catatan peminjaman barang.</td></tr>';
+      return;
+    }
+    
+    tbody.innerHTML = allPinjam.map(p => {
+      const namaBarang = p.inventaris ? p.inventaris.nama_barang : 'Barang Terhapus';
+      let statusPill = '';
+      if (p.status === 'pengajuan') statusPill = '<span class="status-pill process" style="background:#ffedd5; color:#ea580c; font-weight:700; padding:2px 8px; border-radius:100px; font-size:11px;">Pengajuan</span>';
+      else if (p.status === 'dipinjam') statusPill = '<span class="status-pill active" style="background:#dbeafe; color:#1e40af; font-weight:700; padding:2px 8px; border-radius:100px; font-size:11px;">Dipinjam</span>';
+      else if (p.status === 'kembali') statusPill = '<span class="status-pill paid" style="background:var(--green-pale); color:var(--green); font-weight:700; padding:2px 8px; border-radius:100px; font-size:11px;">Kembali</span>';
+      else if (p.status === 'ditolak') statusPill = '<span class="status-pill unpaid" style="background:#fee2e2; color:#991b1b; font-weight:700; padding:2px 8px; border-radius:100px; font-size:11px;">Ditolak</span>';
+
+      let actionsHtml = '';
+      if (p.status === 'pengajuan') {
+        actionsHtml = `
+          <div style="display: flex; gap: 6px;">
+            <button class="btn-sm solid" onclick="prosesStatusPinjam(${p.id}, 'setujui')" style="background: var(--green); color: #fff; border: none; border-radius: 6px; padding: 4px 8px; font-size: 11px; cursor: pointer;">✓ Setujui</button>
+            <button class="btn-sm solid danger" onclick="prosesStatusPinjam(${p.id}, 'tolak')" style="background: var(--red); color: #fff; border: none; border-radius: 6px; padding: 4px 8px; font-size: 11px; cursor: pointer;">✗ Tolak</button>
+          </div>
+        `;
+      } else if (p.status === 'dipinjam') {
+        actionsHtml = `
+          <button class="btn-sm solid" onclick="prosesStatusPinjam(${p.id}, 'kembali')" style="background: #3b82f6; color: #fff; border: none; border-radius: 6px; padding: 4px 8px; font-size: 11px; cursor: pointer;">↩ Kembali</button>
+        `;
+      } else {
+        actionsHtml = `<span style="color: var(--text-muted); font-size: 11px;">Selesai</span>`;
+      }
+
+      return `
+        <tr>
+          <td>
+            <b>${escapeHtml(p.peminjam_nama)}</b><br>
+            <a href="https://wa.me/${(p.peminjam_wa || '').replace(/[^0-9]/g,'')}" target="_blank" style="font-size: 11px; color: var(--green); text-decoration: underline; font-weight: 600;">📱 ${escapeHtml(p.peminjam_wa || '-')}</a>
+          </td>
+          <td>${escapeHtml(namaBarang)}</td>
+          <td style="font-weight: 700;">${p.jumlah}</td>
+          <td>${p.tanggal_pinjam}</td>
+          <td>${p.tanggal_kembali || '-'}</td>
+          <td>${statusPill}</td>
+          <td>${actionsHtml}</td>
+        </tr>
+      `;
+    }).join('');
+  }
+}
+
+function switchInventarisTab(tab) {
+  currentInventarisTab = tab;
+  document.querySelectorAll('#a-inventaris .admin-tab-btn').forEach(btn => btn.classList.remove('active'));
+  document.querySelectorAll('#a-inventaris .admin-tab-content').forEach(content => content.classList.remove('active'));
+  
+  if (tab === 'barang') {
+    document.getElementById('tab-btn-barang').classList.add('active');
+    document.getElementById('tab-content-barang').classList.add('active');
+  } else {
+    document.getElementById('tab-btn-pinjam').classList.add('active');
+    document.getElementById('tab-content-pinjam').classList.add('active');
+  }
+  renderAdminInventaris();
+}
+
+function openTambahBarangModal() {
+  document.getElementById('barang-modal-title').textContent = '📦 Tambah Barang Inventaris';
+  document.getElementById('barang-id').value = '';
+  document.getElementById('barang-nama').value = '';
+  document.getElementById('barang-jumlah-total').value = 1;
+  document.getElementById('barang-kondisi').value = 'Baik';
+  document.getElementById('barang-lokasi').value = '';
+  document.getElementById('barang-keterangan').value = '';
+  document.getElementById('barang-modal').classList.add('open');
+}
+
+function editBarang(id) {
+  const item = allInventaris.find(i => i.id === id);
+  if (!item) return;
+  
+  document.getElementById('barang-modal-title').textContent = '📝 Edit Barang Inventaris';
+  document.getElementById('barang-id').value = item.id;
+  document.getElementById('barang-nama').value = item.nama_barang;
+  document.getElementById('barang-jumlah-total').value = item.jumlah_total;
+  document.getElementById('barang-kondisi').value = item.kondisi;
+  document.getElementById('barang-lokasi').value = item.lokasi || '';
+  document.getElementById('barang-keterangan').value = item.keterangan || '';
+  document.getElementById('barang-modal').classList.add('open');
+}
+
+function closeBarangModal() {
+  document.getElementById('barang-modal').classList.remove('open');
+}
+
+async function simpanBarang() {
+  const id = document.getElementById('barang-id').value;
+  const nama = document.getElementById('barang-nama').value.trim();
+  const total = parseInt(document.getElementById('barang-jumlah-total').value) || 0;
+  const kondisi = document.getElementById('barang-kondisi').value;
+  const lokasi = document.getElementById('barang-lokasi').value.trim();
+  const keterangan = document.getElementById('barang-keterangan').value.trim();
+  
+  if (!nama || total <= 0) {
+    showToast('Lengkapi nama barang dan jumlah total (minimal 1)!');
+    return;
+  }
+  
+  let jumlah_tersedia = total;
+  if (id) {
+    const oldItem = allInventaris.find(item => item.id == id);
+    if (oldItem) {
+      const dipinjam = oldItem.jumlah_total - oldItem.jumlah_tersedia;
+      if (total < dipinjam) {
+        showToast(`Total stok tidak boleh kurang dari jumlah yang sedang dipinjam (${dipinjam} unit)!`);
+        return;
+      }
+      jumlah_tersedia = total - dipinjam;
+    }
+  }
+  
+  const payload = {
+    nama_barang: nama,
+    jumlah_total: total,
+    jumlah_tersedia: jumlah_tersedia,
+    kondisi: kondisi,
+    lokasi: lokasi,
+    keterangan: keterangan
+  };
+  
+  let error = null;
+  if (id) {
+    const { error: err } = await supabase.from('inventaris').update(payload).eq('id', id);
+    error = err;
+  } else {
+    const { error: err } = await supabase.from('inventaris').insert([payload]);
+    error = err;
+  }
+  
+  if (error) {
+    showToast('Gagal menyimpan barang: ' + error.message);
+  } else {
+    showToast('Barang berhasil disimpan!');
+    closeBarangModal();
+    await renderAdminInventaris();
+    await renderPublicInventaris();
+  }
+}
+
+async function hapusBarang(id) {
+  if (!confirm('Apakah Anda yakin ingin menghapus barang ini? Semua data peminjaman terkait juga akan ikut terhapus.')) return;
+  
+  const { error } = await supabase.from('inventaris').delete().eq('id', id);
+  if (error) {
+    showToast('Gagal menghapus barang: ' + error.message);
+  } else {
+    showToast('Barang berhasil dihapus!');
+    await renderAdminInventaris();
+    await renderPublicInventaris();
+  }
+}
+
+function openPinjamBarangModal() {
+  const select = document.getElementById('pinjam-barang-select');
+  if (!select) return;
+  
+  if (allInventaris.length === 0) {
+    showToast('Belum ada inventaris barang yang terdaftar.');
+    return;
+  }
+  
+  select.innerHTML = allInventaris.map(item => `
+    <option value="${item.id}" ${item.jumlah_tersedia <= 0 ? 'disabled' : ''}>
+      ${escapeHtml(item.nama_barang)} (Tersedia: ${item.jumlah_tersedia}/${item.jumlah_total})
+    </option>
+  `).join('');
+  
+  document.getElementById('pinjam-nama').value = '';
+  document.getElementById('pinjam-wa').value = '628';
+  document.getElementById('pinjam-jumlah').value = 1;
+  document.getElementById('pinjam-tanggal').value = new Date().toISOString().split('T')[0];
+  document.getElementById('pinjam-tanggal-kembali').value = '';
+  document.getElementById('pinjam-keterangan').value = '';
+  
+  document.getElementById('pinjam-barang-modal').classList.add('open');
+}
+
+function closePinjamBarangModal() {
+  document.getElementById('pinjam-barang-modal').classList.remove('open');
+}
+
+async function kirimPengajuanPinjam() {
+  const nama = document.getElementById('pinjam-nama').value.trim();
+  const wa = document.getElementById('pinjam-wa').value.trim();
+  const barangId = document.getElementById('pinjam-barang-select').value;
+  const jumlah = parseInt(document.getElementById('pinjam-jumlah').value) || 0;
+  const tglPinjam = document.getElementById('pinjam-tanggal').value;
+  const tglKembali = document.getElementById('pinjam-tanggal-kembali').value;
+  const keterangan = document.getElementById('pinjam-keterangan').value.trim();
+  
+  if (!nama || !wa || !barangId || jumlah <= 0 || !tglPinjam) {
+    showToast('Lengkapi Nama, WhatsApp, Barang, Jumlah, dan Tanggal Pinjam!');
+    return;
+  }
+  
+  const item = allInventaris.find(i => i.id == barangId);
+  if (!item) {
+    showToast('Barang tidak ditemukan!');
+    return;
+  }
+  
+  if (jumlah > item.jumlah_tersedia) {
+    showToast(`Jumlah peminjaman melebihi stok yang tersedia (${item.jumlah_tersedia} unit)!`);
+    return;
+  }
+  
+  const payload = {
+    peminjam_nama: nama,
+    peminjam_wa: wa,
+    inventaris_id: parseInt(barangId),
+    jumlah: jumlah,
+    tanggal_pinjam: tglPinjam,
+    tanggal_kembali: tglKembali || null,
+    status: 'pengajuan',
+    keterangan: keterangan
+  };
+  
+  const { error } = await supabase.from('inventaris_pinjam').insert([payload]);
+  if (error) {
+    showToast('Gagal mengirim pengajuan peminjaman: ' + error.message);
+  } else {
+    showToast('Pengajuan peminjaman berhasil dikirim! Menunggu konfirmasi admin.');
+    closePinjamBarangModal();
+    await loadInventaris();
+    await renderPublicInventaris();
+  }
+}
+
+async function prosesStatusPinjam(pinjamId, tindakan) {
+  if (!supabase) return;
+  
+  try {
+    const { data: loan, error: getErr } = await supabase
+      .from('inventaris_pinjam')
+      .select('*, inventaris(*)')
+      .eq('id', pinjamId)
+      .single();
+      
+    if (getErr || !loan) {
+      showToast('Peminjaman tidak ditemukan: ' + (getErr ? getErr.message : ''));
+      return;
+    }
+    
+    if (tindakan === 'setujui') {
+      if (loan.status !== 'pengajuan') {
+        showToast('Peminjaman ini sudah diproses.');
+        return;
+      }
+      if (!loan.inventaris) {
+        showToast('Data barang tidak ditemukan!');
+        return;
+      }
+      if (loan.inventaris.jumlah_tersedia < loan.jumlah) {
+        showToast(`Stok tidak cukup untuk menyetujui peminjaman ini! Tersedia: ${loan.inventaris.jumlah_tersedia}, Diminta: ${loan.jumlah}`);
+        return;
+      }
+      
+      const { error: errStatus } = await supabase
+        .from('inventaris_pinjam')
+        .update({ status: 'dipinjam' })
+        .eq('id', pinjamId);
+        
+      if (errStatus) throw errStatus;
+      
+      const { error: errStock } = await supabase
+        .from('inventaris')
+        .update({ jumlah_tersedia: loan.inventaris.jumlah_tersedia - loan.jumlah })
+        .eq('id', loan.inventaris_id);
+        
+      if (errStock) throw errStock;
+      
+      showToast('Peminjaman disetujui, stok barang dikurangi.');
+      
+    } else if (tindakan === 'tolak') {
+      if (loan.status !== 'pengajuan') {
+        showToast('Peminjaman ini sudah diproses.');
+        return;
+      }
+      
+      const { error: errStatus } = await supabase
+        .from('inventaris_pinjam')
+        .update({ status: 'ditolak' })
+        .eq('id', pinjamId);
+        
+      if (errStatus) throw errStatus;
+      
+      showToast('Peminjaman ditolak.');
+      
+    } else if (tindakan === 'kembali') {
+      if (loan.status !== 'dipinjam') {
+        showToast('Peminjaman ini tidak berstatus dipinjam.');
+        return;
+      }
+      if (!loan.inventaris) {
+        showToast('Data barang tidak ditemukan!');
+        return;
+      }
+      
+      const { error: errStatus } = await supabase
+        .from('inventaris_pinjam')
+        .update({ status: 'kembali' })
+        .eq('id', pinjamId);
+        
+      if (errStatus) throw errStatus;
+      
+      const newTersedia = Math.min(loan.inventaris.jumlah_total, loan.inventaris.jumlah_tersedia + loan.jumlah);
+      
+      const { error: errStock } = await supabase
+        .from('inventaris')
+        .update({ jumlah_tersedia: newTersedia })
+        .eq('id', loan.inventaris_id);
+        
+      if (errStock) throw errStock;
+      
+      showToast('Barang berhasil dikembalikan, stok dipulihkan.');
+    }
+    
+    await renderAdminInventaris();
+    await renderPublicInventaris();
+    
+  } catch (err) {
+    showToast('Terjadi kesalahan: ' + err.message);
   }
 }
 
