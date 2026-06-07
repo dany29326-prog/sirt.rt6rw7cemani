@@ -1086,8 +1086,9 @@ td { padding:14px 16px; font-size:13px; border-bottom:1px solid var(--border); c
   background: #fff;
   border: 1px solid var(--border);
   border-radius: var(--radius);
-  padding: 20px;
-  display: flex;
+  padding: 16px 20px;
+  display: grid;
+  grid-template-columns: auto 1fr auto;
   align-items: center;
   gap: 16px;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -1165,13 +1166,21 @@ td { padding:14px 16px; font-size:13px; border-bottom:1px solid var(--border); c
     grid-template-columns: 1fr;
   }
   .pengurus-card {
-    flex-direction: column;
-    text-align: center;
-    padding: 24px;
+    grid-template-columns: auto 1fr;
+    gap: 12px;
+    padding: 16px;
+  }
+  .pengurus-avatar {
+    width: 44px;
+    height: 44px;
+    font-size: 14px;
+    border-radius: 10px;
   }
   .pengurus-wa-btn {
+    grid-column: span 2;
     width: 100%;
     justify-content: center;
+    margin-top: 8px;
   }
   .stats-grid { grid-template-columns: 1fr 1fr; }
   .kas-header-cards { grid-template-columns: 1fr; }
@@ -3762,16 +3771,14 @@ function renderPublicWarga() {
     const waClean = (w.no_wa || '').replace(/[^0-9]/g, '');
     const avatarGradient = getPremiumGradient(w.nama_kepala);
     html += `
-      <div class="pengurus-card" style="margin-bottom: 0; text-align: left; align-items: center; flex-direction: row; padding: 14px 18px; justify-content: space-between; gap: 14px;">
-        <div style="display: flex; align-items: center; gap: 14px;">
-          <div class="pengurus-avatar" style="background: ${avatarGradient}; width: 46px; height: 46px; font-size: 15px; border-radius: 12px; box-shadow: none; flex-shrink: 0;">${escapeHtml(initials)}</div>
-          <div class="pengurus-info" style="text-align: left;">
-            <div class="pengurus-name" style="font-size: 14.5px; font-weight: 700; color: var(--text);">${escapeHtml(w.nama_kepala)}</div>
-            <div class="pengurus-address" style="font-size: 11px; color: var(--text-light); margin-top: 3px; display: flex; align-items: center; gap: 4px;">📍 <span>${escapeHtml(w.alamat || 'Ngruki RT 06 / RW 17, Cemani')}</span></div>
-          </div>
+      <div class="pengurus-card" style="margin-bottom: 0;">
+        <div class="pengurus-avatar" style="background: ${avatarGradient}; flex-shrink: 0;">${escapeHtml(initials)}</div>
+        <div class="pengurus-info" style="text-align: left;">
+          <div class="pengurus-name" style="font-size: 14.5px; font-weight: 700; color: var(--text);">${escapeHtml(w.nama_kepala)}</div>
+          <div class="pengurus-address" style="font-size: 11px; color: var(--text-light); margin-top: 3px; display: flex; align-items: center; gap: 4px;">📍 <span>${escapeHtml(w.alamat || 'Ngruki RT 06 / RW 17, Cemani')}</span></div>
         </div>
         ${waClean ? `
-          <a class="pengurus-wa-btn" href="https://wa.me/${waClean}?text=Halo%20${encodeURIComponent(w.nama_kepala)}" target="_blank" style="padding: 8px 14px; font-size: 11px; flex-shrink: 0; display: inline-flex; align-items: center; gap: 6px; border-radius: 8px;">
+          <a class="pengurus-wa-btn" href="https://wa.me/${waClean}?text=Halo%20${encodeURIComponent(w.nama_kepala)}" target="_blank">
             <span>💬</span> WA
           </a>
         ` : ''}
@@ -3802,17 +3809,15 @@ function renderPublicPengurus() {
     const isKetua = p.jabatan.toLowerCase().includes('ketua rt');
     const cardBorder = isKetua ? 'border-left: 4px solid var(--green); background: linear-gradient(135deg, #ffffff 0%, #f0fdf4 100%);' : '';
     html += `
-      <div class="pengurus-card" style="margin-bottom: 0; text-align: left; align-items: center; flex-direction: row; padding: 14px 18px; justify-content: space-between; gap: 14px; ${cardBorder}">
-        <div style="display: flex; align-items: center; gap: 14px;">
-          <div class="pengurus-avatar" style="background: ${avatarGradient}; width: 46px; height: 46px; font-size: 15px; border-radius: 12px; box-shadow: none; flex-shrink: 0;">${escapeHtml(initials)}</div>
-          <div class="pengurus-info" style="text-align: left;">
-            <div class="pengurus-role-badge" style="font-size: 9px; padding: 2px 6px; margin-bottom: 2px;">${escapeHtml(p.jabatan)}</div>
-            <div class="pengurus-name" style="font-size: 14.5px; font-weight: 700; color: var(--text);">${escapeHtml(p.nama)}</div>
-            <div class="pengurus-address" style="font-size: 11px; color: var(--text-light); margin-top: 2px;">📍 ${escapeHtml(p.alamat || 'Ngruki RT 06 / RW 17, Cemani')}</div>
-          </div>
+      <div class="pengurus-card" style="${cardBorder}">
+        <div class="pengurus-avatar" style="background: ${avatarGradient}; flex-shrink: 0;">${escapeHtml(initials)}</div>
+        <div class="pengurus-info" style="text-align: left;">
+          <div class="pengurus-role-badge" style="font-size: 9px; padding: 2px 6px; margin-bottom: 2px;">${escapeHtml(p.jabatan)}</div>
+          <div class="pengurus-name" style="font-size: 14.5px; font-weight: 700; color: var(--text);">${escapeHtml(p.nama)}</div>
+          <div class="pengurus-address" style="font-size: 11px; color: var(--text-light); margin-top: 2px;">📍 ${escapeHtml(p.alamat || 'Ngruki RT 06 / RW 17, Cemani')}</div>
         </div>
         ${waClean ? `
-          <a class="pengurus-wa-btn" href="https://wa.me/${waClean}?text=Halo%20${encodeURIComponent(p.jabatan)}%20RT%2006" target="_blank" style="padding: 8px 14px; font-size: 11px; flex-shrink: 0; display: inline-flex; align-items: center; gap: 6px; border-radius: 8px;">
+          <a class="pengurus-wa-btn" href="https://wa.me/${waClean}?text=Halo%20${encodeURIComponent(p.jabatan)}%20RT%2006" target="_blank">
             <span>💬</span> Hubungi
           </a>
         ` : ''}
