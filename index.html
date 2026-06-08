@@ -1307,7 +1307,10 @@ td { padding:14px 16px; font-size:13px; border-bottom:1px solid var(--border); c
   .album-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
   .album-card { background: #fff; border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow); display: flex; flex-direction: column; transition: transform 0.2s, box-shadow 0.2s; }
   .album-card:hover { transform: translateY(-4px); box-shadow: 0 12px 24px rgba(0, 0, 0, 0.08); }
-  .album-card-header { background: linear-gradient(135deg, #059669 0%, #065f46 100%); padding: 16px; color: #fff; font-weight: 700; font-size: 14px; position: relative; }
+  .album-card-preview { height: 160px; width: 100%; overflow: hidden; background: #e2e8f0; position: relative; }
+  .album-card-preview img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.3s; }
+  .album-card:hover .album-card-preview img { transform: scale(1.05); }
+  .album-card-tag { position: absolute; top: 12px; left: 12px; background: rgba(5, 150, 105, 0.9); backdrop-filter: blur(4px); color: #fff; padding: 4px 10px; border-radius: 100px; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
   .album-card-body { padding: 18px; display: flex; flex-direction: column; flex: 1; }
   .album-card-title { font-size: 15px; font-weight: 800; color: var(--text); margin-bottom: 8px; }
   .album-card-desc { font-size: 12px; color: var(--text-light); line-height: 1.5; margin-bottom: 16px; flex: 1; }
@@ -2447,6 +2450,10 @@ td { padding:14px 16px; font-size:13px; border-bottom:1px solid var(--border); c
       <div>
         <label class="form-label" style="font-weight:600;margin-bottom:4px;display:block;">Tautan Google Photos (Shared Album)</label>
         <input id="galeri-link" placeholder="Contoh: https://photos.app.goo.gl/...">
+      </div>
+      <div>
+        <label class="form-label" style="font-weight:600;margin-bottom:4px;display:block;">Tautan Cover Gambar Preview (Opsional)</label>
+        <input id="galeri-cover" placeholder="Contoh: https://link.gambar.com/preview.jpg (Kosongkan untuk default)">
       </div>
     </div>
     <div class="modal-actions">
@@ -4404,10 +4411,15 @@ async function renderPublicGaleri() {
     const escapedDesc = escapeHtml(album.deskripsi || 'Dokumentasi kegiatan warga RT 06.');
     const linkUrl = album.link.startsWith('http') ? album.link : 'https://' + album.link;
     
+    const coverUrl = album.cover_url && album.cover_url.trim() !== ''
+      ? album.cover_url.trim()
+      : `data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="400" height="220" viewBox="0 0 400 220"><rect width="100%" height="100%" fill="url(%23grad)"/><defs><linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="%23059669"/><stop offset="100%" stop-color="%23065f46"/></linearGradient></defs><text x="50%" y="45%" dominant-baseline="middle" text-anchor="middle" fill="%23ffffff" font-family="system-ui, -apple-system, sans-serif" font-size="22" font-weight="bold">📸 Galeri Kegiatan</text><text x="50%" y="65%" dominant-baseline="middle" text-anchor="middle" fill="%23a7f3d0" font-family="system-ui, -apple-system, sans-serif" font-size="12" font-weight="500">RT 06 Ngruki Cemani</text></svg>`;
+      
     return `
       <div class="album-card">
-        <div class="album-card-header">
-          📸 album kegiatan
+        <div class="album-card-preview">
+          <img src="${escapeHtml(coverUrl)}" alt="${escapedTitle}" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%22400%22 height=%22220%22 viewBox=%220 0 400 220%22><rect width=%22100%%22 height=%22100%%22 fill=%22%23fee2e2%22/><text x=%2250%%22 y=%2250%%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 fill=%22%23991b1b%22 font-family=%22system-ui, sans-serif%22 font-size=%2214%22 font-weight=%22bold%22>Gambar Error / Tidak Ditemukan</text></svg>'">
+          <div class="album-card-tag">📸 Album</div>
         </div>
         <div class="album-card-body">
           <div class="album-card-title">${escapedTitle}</div>
@@ -4467,6 +4479,7 @@ function openTambahGaleriModal() {
   document.getElementById('galeri-tanggal').value = new Date().toISOString().split('T')[0];
   document.getElementById('galeri-deskripsi').value = '';
   document.getElementById('galeri-link').value = '';
+  document.getElementById('galeri-cover').value = '';
   document.getElementById('galeri-modal').classList.add('open');
 }
 
@@ -4480,6 +4493,7 @@ function editGaleri(id) {
   document.getElementById('galeri-tanggal').value = album.tanggal;
   document.getElementById('galeri-deskripsi').value = album.deskripsi || '';
   document.getElementById('galeri-link').value = album.link;
+  document.getElementById('galeri-cover').value = album.cover_url || '';
   document.getElementById('galeri-modal').classList.add('open');
 }
 
@@ -4493,6 +4507,7 @@ async function simpanGaleri() {
   const tanggal = document.getElementById('galeri-tanggal').value;
   const deskripsi = document.getElementById('galeri-deskripsi').value.trim();
   const link = document.getElementById('galeri-link').value.trim();
+  const cover_url = document.getElementById('galeri-cover').value.trim();
   
   if (!nama || !tanggal || !link) {
     showToast('Lengkapi semua data (Nama, Tanggal, Link)!');
@@ -4500,18 +4515,23 @@ async function simpanGaleri() {
   }
   
   if (!link.startsWith('http://') && !link.startsWith('https://')) {
-    showToast('Tautan harus dimulai dengan http:// atau https://');
+    showToast('Tautan album harus dimulai dengan http:// atau https://');
+    return;
+  }
+  
+  if (cover_url && !cover_url.startsWith('http://') && !cover_url.startsWith('https://') && !cover_url.startsWith('data:image/')) {
+    showToast('Tautan cover harus dimulai dengan http://, https:// atau data:image/');
     return;
   }
   
   if (id) {
     const idx = allGaleri.findIndex(g => g.id === id);
     if (idx !== -1) {
-      allGaleri[idx] = { id, nama, tanggal, deskripsi, link };
+      allGaleri[idx] = { id, nama, tanggal, deskripsi, link, cover_url };
     }
   } else {
     const newId = Date.now().toString();
-    allGaleri.push({ id: newId, nama, tanggal, deskripsi, link });
+    allGaleri.push({ id: newId, nama, tanggal, deskripsi, link, cover_url });
   }
   
   const success = await saveGaleriToSettings();
@@ -4519,6 +4539,7 @@ async function simpanGaleri() {
     closeGaleriModal();
     showToast('Album galeri berhasil disimpan!');
     await renderAdminGaleri();
+    await renderPublicGaleri();
   }
 }
 
