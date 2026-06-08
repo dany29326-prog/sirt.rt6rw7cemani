@@ -1,0 +1,15 @@
+name: Keep Supabase Alive
+
+on:
+  schedule:
+    - cron: '0 6 */2 * *'  # Dijalankan setiap 2 hari sekali pada jam 06:00 UTC (13:00 WIB)
+  workflow_dispatch:        # Memungkinkan untuk dijalankan secara manual dari tab Actions di GitHub
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ping Supabase Health Endpoint
+        run: |
+          curl -X GET "https://jnodvyfhxrjwoxgnduxp.supabase.co/auth/v1/health" \
+            -H "apikey: ${{ secrets.SUPABASE_ANON_KEY }}"
