@@ -1674,7 +1674,7 @@ td { padding:14px 16px; font-size:13px; border-bottom:1px solid var(--border); c
     <div class="pub-content">
       <button class="back-to-home-btn" onclick="showPubPage('beranda')">← Kembali ke Beranda</button>
       <div class="sec-title">👑 Pengurus RT 06 / RW 17</div>
-      <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 20px; margin-top: -10px;">
+      <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 20px; margin-top: 6px;">
         Berikut adalah susunan pengurus RT 06 / RW 17 Ngruki, Cemani. Hubungi pengurus untuk koordinasi atau layanan administratif.
       </p>
       
@@ -1689,7 +1689,7 @@ td { padding:14px 16px; font-size:13px; border-bottom:1px solid var(--border); c
     <div class="pub-content">
       <button class="back-to-home-btn" onclick="showPubPage('beranda')">← Kembali ke Beranda</button>
       <div class="sec-title">👥 Daftar Warga RT 06 / RW 17</div>
-      <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 20px; margin-top: -10px;">
+      <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 20px; margin-top: 6px;">
         Berikut adalah daftar warga aktif RT 06 / RW 17 Ngruki, Cemani. Hubungi tetangga Kakak untuk silaturahmi atau keperluan lainnya.
       </p>
       
@@ -1711,7 +1711,7 @@ td { padding:14px 16px; font-size:13px; border-bottom:1px solid var(--border); c
     <div class="pub-content">
       <button class="back-to-home-btn" onclick="showPubPage('beranda')">← Kembali ke Beranda</button>
       <div class="sec-title">🗳️ Musyawarah & Polling Digital Warga</div>
-      <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 24px; margin-top: -10px;">
+      <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 24px; margin-top: 6px;">
         Partisipasi Kakak sangat penting dalam pengambilan keputusan bersama di lingkungan RT 06 / RW 17 Ngruki. Salurkan suara Kakak secara demokratis di bawah ini.
       </p>
       
@@ -1726,7 +1726,7 @@ td { padding:14px 16px; font-size:13px; border-bottom:1px solid var(--border); c
     <div class="pub-content">
       <button class="back-to-home-btn" onclick="showPubPage('beranda')">← Kembali ke Beranda</button>
       <div class="sec-title">📸 Galeri Kegiatan RT 06 Ngruki</div>
-      <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 24px; margin-top: -10px;">
+      <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 24px; margin-top: 6px;">
         Dokumentasi momen kebersamaan dan berbagai kegiatan warga RT 06 Cemani.
       </p>
       
@@ -1741,7 +1741,7 @@ td { padding:14px 16px; font-size:13px; border-bottom:1px solid var(--border); c
     <div class="pub-content">
       <button class="back-to-home-btn" onclick="showPubPage('beranda')">← Kembali ke Beranda</button>
       <div class="sec-title">📦 Inventaris & Aset RT 06</div>
-      <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 24px; margin-top: -10px;">
+      <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 24px; margin-top: 6px;">
         Berikut daftar inventaris barang milik RT 06 Ngruki Cemani yang dapat dipinjam oleh warga. Silakan ajukan pinjam online di bawah ini.
       </p>
       
@@ -4413,12 +4413,12 @@ async function renderPublicGaleri() {
     
     const coverUrl = album.cover_url && album.cover_url.trim() !== ''
       ? album.cover_url.trim()
-      : `data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="400" height="220" viewBox="0 0 400 220"><rect width="100%" height="100%" fill="url(%23grad)"/><defs><linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="%23059669"/><stop offset="100%" stop-color="%23065f46"/></linearGradient></defs><text x="50%" y="45%" dominant-baseline="middle" text-anchor="middle" fill="%23ffffff" font-family="system-ui, -apple-system, sans-serif" font-size="22" font-weight="bold">📸 Galeri Kegiatan</text><text x="50%" y="65%" dominant-baseline="middle" text-anchor="middle" fill="%23a7f3d0" font-family="system-ui, -apple-system, sans-serif" font-size="12" font-weight="500">RT 06 Ngruki Cemani</text></svg>`;
+      : 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0MDAiIGhlaWdodD0iMjIwIiB2aWV3Qm94PSIwIDAgNDAwIDIyMCI+CiAgPHJlY3Qgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgZmlsbD0iIzA1OTY2OSIvPgogIDxkZWZzPgogICAgPGxpbmVhckdyYWRpZW50IGlkPSJncmFkIiB4MT0iMCUiIHkxPSIwJSIgeDI9IjEwMCUiIHkyPSIxMDAlIj4KICAgICAgPHN0b3Agb2Zmc2V0PSIwJSIgc3RvcC1jb2xvcj0iIzA1OTY2OSIvPgogICAgICA8c3RvcCBvZmZzZXQ9IjEwMCUiIHN0b3AtY29sb3I9IiMwNjVmNDYiLz4KICAgIDwvbGluZWFyR3JhZGllbnQ+CiAgPC9kZWZzPgogIDxyZWN0IHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbGw9InVybCgjZ3JhZCkiLz4KICA8dGV4dCB4PSI1MCUiIHk9IjQ1JSIgZG9taW5hbnQtYmFzZWxpbmU9Im1pZGRsZSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZmlsbD0iI2ZmZmZmZiIgZm9udC1mYW1pbHk9InN5c3RlbS11aSwgLWFwcGxlLXN5c3RlbSwgc2Fucy1zZXJpZiIgZm9udC1zaXplPSIyMiIgZm9udC13ZWlnaHQ9ImJvbGQiPvCfk7ggR2FsZXJpIEtlZ2lhdGFuPC90ZXh0PgogIDx0ZXh0IHg9IjUwJSIgeT0iNjUlIiBkb21pbmFudC1iYXNlbGluZT0ibWlkZGxlIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmaWxsPSIjYTdmM2QwIiBmb250LWZhbWlseT0ic3lzdGVtLXVpLCAtYXBwbGUtc3lzdGVtLCBzYW5zLXNlcmlmIiBmb250LXNpemU9IjEyIiBmb250LXdlaWdodD0iNTAwIj5SVCAwNiBOZ3J1a2kgQ2VtYW5pPC90ZXh0Pgo8L3N2Zz4=';
       
     return `
       <div class="album-card">
         <div class="album-card-preview">
-          <img src="${escapeHtml(coverUrl)}" alt="${escapedTitle}" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%22400%22 height=%22220%22 viewBox=%220 0 400 220%22><rect width=%22100%%22 height=%22100%%22 fill=%22%23fee2e2%22/><text x=%2250%%22 y=%2250%%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 fill=%22%23991b1b%22 font-family=%22system-ui, sans-serif%22 font-size=%2214%22 font-weight=%22bold%22>Gambar Error / Tidak Ditemukan</text></svg>'">
+          <img src="${escapeHtml(coverUrl)}" alt="${escapedTitle}" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0MDAiIGhlaWdodD0iMjIwIiB2aWV3Qm94PSIwIDAgNDAwIDIyMCI+CiAgPHJlY3Qgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgZmlsbD0iI2ZlZTJlMiIvPgogIDx0ZXh0IHg9IjUwJSIgeT0iNTAlIiBkb21pbmFudC1iYXNlbGluZT0ibWlkZGxlIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmaWxsPSIjOTkxYjFiIiBmb250LWZhbWlseT0ic3lzdGVtLXVpLCAtYXBwbGUtc3lzdGVtLCBzYW5zLXNlcmlmIiBmb250LXNpemU9IjE0IiBmb250LXdlaWdodD0iYm9sZCI+R2FtYmFyIFByZXZpZXcgVGlkYWsgRGl0ZW11a2FuPC90ZXh0Pgo8L3N2Zz4='">
           <div class="album-card-tag">📸 Album</div>
         </div>
         <div class="album-card-body">
