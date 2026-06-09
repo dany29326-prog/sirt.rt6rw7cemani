@@ -1453,7 +1453,7 @@ td { padding:14px 16px; font-size:13px; border-bottom:1px solid var(--border); c
       <div class="pub-sidebar-logo">
         <div class="pub-logo-icon">🏘️</div>
         <div>
-          <div class="pub-logo-text">SiRT 06</div>
+          <div class="pub-logo-text">SiRT <span class="dynamic-rt-num">06</span></div>
           <div class="pub-logo-sub">RT 06 / RW 17 Cemani</div>
         </div>
       </div>
@@ -1490,7 +1490,7 @@ td { padding:14px 16px; font-size:13px; border-bottom:1px solid var(--border); c
         <div class="user-card" style="background: var(--green-pale); border: 1px solid rgba(5, 150, 105, 0.15); width: 100%; display: flex; align-items: center; gap: 10px; padding: 10px; border-radius: 12px;">
           <div class="user-av" style="background: var(--green); color: #fff; width: 34px; height: 34px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 700;">W</div>
           <div>
-            <div class="user-name" style="font-size: 13px; font-weight: 600; color: var(--text);">Warga RT 06</div>
+            <div class="user-name" style="font-size: 13px; font-weight: 600; color: var(--text);">Warga <span class="dynamic-rt-name">RT 06 Cemani</span></div>
             <div class="user-role" style="font-size: 10px; color: var(--text-light);">Ngruki Cemani</div>
           </div>
         </div>
@@ -1531,7 +1531,7 @@ td { padding:14px 16px; font-size:13px; border-bottom:1px solid var(--border); c
     <div class="pub-content">
       <div class="hero">
         <div class="hero-content">
-          <div class="hero-badge">🏘️ RT 06 / RW 17 · Ngruki · Cemani · Grogol · Sukoharjo</div>
+          <div class="hero-badge"><span class="dynamic-rt-badge">🏘️ RT 06 / RW 17 · Ngruki · Cemani · Grogol · Sukoharjo</span></div>
           <div class="hero-title" style="font-size: 34px; margin-bottom: 8px;">Portal Warga Digital</div>
           <div class="hero-sub" style="margin-bottom: 20px;">Layanan RT, informasi warga, iuran, surat, dan musyawarah dalam satu aplikasi</div>
           <div class="hero-actions" style="display: flex; gap: 12px; flex-wrap: wrap;">
@@ -1554,7 +1554,7 @@ td { padding:14px 16px; font-size:13px; border-bottom:1px solid var(--border); c
         <div class="pub-stat-card blue-accent">
           <div class="pub-stat-header">
             <span class="pub-stat-icon">💰</span>
-            <div class="pub-stat-title">Kas RT 06</div>
+            <div class="pub-stat-title" id="pub-stat-kas-title">Kas RT 06</div>
           </div>
           <div class="pub-stat-value" id="pub-stat-kas">Rp 0</div>
           <div class="pub-stat-sub" id="pub-stat-kas-date">Saldo per Juni 2026</div>
@@ -1597,9 +1597,9 @@ td { padding:14px 16px; font-size:13px; border-bottom:1px solid var(--border); c
       <div class="quick-grid" style="grid-template-columns: repeat(3, 1fr);">
         <div class="quick-card" onclick="showPubPage('surat')" style="display: flex; gap: 14px; align-items: center; text-align: left; padding: 18px 20px; cursor: pointer;"><div class="quick-icon" style="font-size: 24px; margin-bottom: 0;">📋</div><div><div class="quick-title" style="font-size: 14.5px; font-weight: 700;">Ajukan Surat</div><div class="quick-desc" style="font-size: 11px; margin-top: 2px;">Buat surat keterangan online</div></div></div>
         <div class="quick-card" onclick="showPubPage('cek-iuran')" style="display: flex; gap: 14px; align-items: center; text-align: left; padding: 18px 20px; cursor: pointer;"><div class="quick-icon" style="font-size: 24px; margin-bottom: 0;">💰</div><div><div class="quick-title" style="font-size: 14.5px; font-weight: 700;">Cek Iuran</div><div class="quick-desc" style="font-size: 11px; margin-top: 2px;">Lihat status iuran bulanan</div></div></div>
-        <div class="quick-card" onclick="showPubPage('warga')" style="display: flex; gap: 14px; align-items: center; text-align: left; padding: 18px 20px; cursor: pointer;"><div class="quick-icon" style="font-size: 24px; margin-bottom: 0;">👥</div><div><div class="quick-title" style="font-size: 14.5px; font-weight: 700;">Daftar Warga</div><div class="quick-desc" style="font-size: 11px; margin-top: 2px;">Kontak & alamat warga RT 06</div></div></div>
+        <div class="quick-card" onclick="showPubPage('warga')" style="display: flex; gap: 14px; align-items: center; text-align: left; padding: 18px 20px; cursor: pointer;"><div class="quick-icon" style="font-size: 24px; margin-bottom: 0;">👥</div><div><div class="quick-title" style="font-size: 14.5px; font-weight: 700;">Daftar Warga</div><div class="quick-desc" style="font-size: 11px; margin-top: 2px;">Kontak & alamat warga <span class="dynamic-rt-name">RT 06 Cemani</span></div></div></div>
         <div class="quick-card" onclick="showPubPage('polling')" style="display: flex; gap: 14px; align-items: center; text-align: left; padding: 18px 20px; cursor: pointer;"><div class="quick-icon" style="font-size: 24px; margin-bottom: 0;">🗳️</div><div><div class="quick-title" style="font-size: 14.5px; font-weight: 700;">Musyawarah</div><div class="quick-desc" style="font-size: 11px; margin-top: 2px;">Jajak pendapat & voting warga</div></div></div>
-        <div class="quick-card" onclick="showPubPage('pengurus')" style="display: flex; gap: 14px; align-items: center; text-align: left; padding: 18px 20px; cursor: pointer;"><div class="quick-icon" style="font-size: 24px; margin-bottom: 0;">👑</div><div><div class="quick-title" style="font-size: 14.5px; font-weight: 700;">Pengurus RT</div><div class="quick-desc" style="font-size: 11px; margin-top: 2px;">Profil & kontak pengurus RT 06</div></div></div>
+        <div class="quick-card" onclick="showPubPage('pengurus')" style="display: flex; gap: 14px; align-items: center; text-align: left; padding: 18px 20px; cursor: pointer;"><div class="quick-icon" style="font-size: 24px; margin-bottom: 0;">👑</div><div><div class="quick-title" style="font-size: 14.5px; font-weight: 700;">Pengurus RT</div><div class="quick-desc" style="font-size: 11px; margin-top: 2px;">Profil & kontak pengurus <span class="dynamic-rt-name">RT 06 Cemani</span></div></div></div>
         <div class="quick-card" onclick="showPubPage('galeri')" style="display: flex; gap: 14px; align-items: center; text-align: left; padding: 18px 20px; cursor: pointer;"><div class="quick-icon" style="font-size: 24px; margin-bottom: 0;">📸</div><div><div class="quick-title" style="font-size: 14.5px; font-weight: 700;">Galeri Kegiatan</div><div class="quick-desc" style="font-size: 11px; margin-top: 2px;">Dokumentasi & foto kegiatan RT</div></div></div>
         <div class="quick-card" onclick="showPubPage('inventaris')" style="display: flex; gap: 14px; align-items: center; text-align: left; padding: 18px 20px; cursor: pointer;"><div class="quick-icon" style="font-size: 24px; margin-bottom: 0;">📦</div><div><div class="quick-title" style="font-size: 14.5px; font-weight: 700;">Inventaris RT</div><div class="quick-desc" style="font-size: 11px; margin-top: 2px;">Daftar & pinjam aset barang RT</div></div></div>
         <div class="quick-card" onclick="openWAFab()" style="display: flex; gap: 14px; align-items: center; text-align: left; padding: 18px 20px; cursor: pointer;"><div class="quick-icon" style="font-size: 24px; margin-bottom: 0;">💬</div><div><div class="quick-title" style="font-size: 14.5px; font-weight: 700;">Aduan Warga</div><div class="quick-desc" style="font-size: 11px; margin-top: 2px;">Laporkan keluhan ke Ketua RT</div></div></div>
@@ -1675,7 +1675,7 @@ td { padding:14px 16px; font-size:13px; border-bottom:1px solid var(--border); c
       <button class="back-to-home-btn" onclick="showPubPage('beranda')">← Kembali ke Beranda</button>
       <div class="sec-title">👑 Pengurus RT 06 / RW 17</div>
       <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 20px; margin-top: 6px;">
-        Berikut adalah susunan pengurus RT 06 / RW 17 Ngruki, Cemani. Hubungi pengurus untuk koordinasi atau layanan administratif.
+        Berikut adalah susunan pengurus <span class="dynamic-rt-name">RT 06 Cemani</span>. Hubungi pengurus untuk koordinasi atau layanan administratif.
       </p>
       
       <div id="public-pengurus-list" class="warga-pub-grid">
@@ -1690,7 +1690,7 @@ td { padding:14px 16px; font-size:13px; border-bottom:1px solid var(--border); c
       <button class="back-to-home-btn" onclick="showPubPage('beranda')">← Kembali ke Beranda</button>
       <div class="sec-title">👥 Daftar Warga RT 06 / RW 17</div>
       <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 20px; margin-top: 6px;">
-        Berikut adalah daftar warga aktif RT 06 / RW 17 Ngruki, Cemani. Hubungi tetangga Kakak untuk silaturahmi atau keperluan lainnya.
+        Berikut adalah daftar warga aktif <span class="dynamic-rt-name">RT 06 Cemani</span>. Hubungi tetangga Kakak untuk silaturahmi atau keperluan lainnya.
       </p>
       
       <div class="filter-bar" style="margin-bottom: 20px;">
@@ -1712,7 +1712,7 @@ td { padding:14px 16px; font-size:13px; border-bottom:1px solid var(--border); c
       <button class="back-to-home-btn" onclick="showPubPage('beranda')">← Kembali ke Beranda</button>
       <div class="sec-title">🗳️ Musyawarah & Polling Digital Warga</div>
       <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 24px; margin-top: 6px;">
-        Partisipasi Kakak sangat penting dalam pengambilan keputusan bersama di lingkungan RT 06 / RW 17 Ngruki. Salurkan suara Kakak secara demokratis di bawah ini.
+        Partisipasi Kakak sangat penting dalam pengambilan keputusan bersama di lingkungan <span class="dynamic-rt-name">RT 06 Cemani</span>. Salurkan suara Kakak secara demokratis di bawah ini.
       </p>
       
       <div id="public-polling-container" style="display:flex; flex-direction:column; gap:20px;">
@@ -1727,7 +1727,7 @@ td { padding:14px 16px; font-size:13px; border-bottom:1px solid var(--border); c
       <button class="back-to-home-btn" onclick="showPubPage('beranda')">← Kembali ke Beranda</button>
       <div class="sec-title">📸 Galeri Kegiatan RT 06 Ngruki</div>
       <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 24px; margin-top: 6px;">
-        Dokumentasi momen kebersamaan dan berbagai kegiatan warga RT 06 Cemani.
+        Dokumentasi momen kebersamaan dan berbagai kegiatan warga <span class="dynamic-rt-name">RT 06 Cemani</span>.
       </p>
       
       <div class="album-grid" id="public-album-grid">
@@ -1742,7 +1742,7 @@ td { padding:14px 16px; font-size:13px; border-bottom:1px solid var(--border); c
       <button class="back-to-home-btn" onclick="showPubPage('beranda')">← Kembali ke Beranda</button>
       <div class="sec-title">📦 Inventaris & Aset RT 06</div>
       <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 24px; margin-top: 6px;">
-        Berikut daftar inventaris barang milik RT 06 Ngruki Cemani yang dapat dipinjam oleh warga. Silakan ajukan pinjam online di bawah ini.
+        Berikut daftar inventaris barang milik <span class="dynamic-rt-name">RT 06 Cemani</span> yang dapat dipinjam oleh warga. Silakan ajukan pinjam online di bawah ini.
       </p>
       
       <div style="display: flex; justify-content: flex-end; margin-bottom: 20px;">
@@ -1814,7 +1814,7 @@ td { padding:14px 16px; font-size:13px; border-bottom:1px solid var(--border); c
         <span class="pub-sheet-btn-icon">📸</span>
         <div>
           <div class="pub-sheet-btn-title">Galeri Kegiatan RT</div>
-          <div class="pub-sheet-btn-desc">Dokumentasi momen kebersamaan warga RT 06</div>
+          <div class="pub-sheet-btn-desc">Dokumentasi momen kebersamaan warga <span class="dynamic-rt-name">RT 06 Cemani</span></div>
         </div>
       </button>
       <button class="pub-sheet-btn" onclick="handleSheetAction('inventaris')">
@@ -1828,7 +1828,7 @@ td { padding:14px 16px; font-size:13px; border-bottom:1px solid var(--border); c
         <span class="pub-sheet-btn-icon" style="background: #25d366; color: #fff; font-size: 20px; font-weight: bold; display: flex; align-items: center; justify-content: center; height: 100%;">💬</span>
         <div>
           <div class="pub-sheet-btn-title">Aduan & Laporan Warga</div>
-          <div class="pub-sheet-btn-desc">Hubungi nomor resmi Ketua RT 06 Cemani</div>
+          <div class="pub-sheet-btn-desc">Hubungi nomor resmi Ketua <span class="dynamic-rt-name">RT 06 Cemani</span></div>
         </div>
       </button>
     </div>
@@ -1923,7 +1923,7 @@ td { padding:14px 16px; font-size:13px; border-bottom:1px solid var(--border); c
       <div class="nav-item" onclick="showAdminPage('inventaris',this)"><span class="nav-icon">📦</span>Kelola Inventaris</div>
       <div class="nav-item" onclick="showAdminPage('setelan',this)"><span class="nav-icon">⚙️</span>Pengaturan</div>
     </nav>
-    <div class="sidebar-footer"><div class="user-card"><div class="user-av">AD</div><div><div class="user-name">Admin RT</div><div class="user-role">Pengurus RT 06</div></div><button class="logout-btn" onclick="doAdminLogout()">⎋</button></div></div>
+    <div class="sidebar-footer"><div class="user-card"><div class="user-av">AD</div><div><div class="user-name">Admin RT</div><div class="user-role">Pengurus <span class="dynamic-rt-name">RT 06 Cemani</span></div></div><button class="logout-btn" onclick="doAdminLogout()">⎋</button></div></div>
   </aside>
   <div class="admin-main">
     <header class="topbar">
@@ -1981,7 +1981,7 @@ td { padding:14px 16px; font-size:13px; border-bottom:1px solid var(--border); c
         <div class="page-header">
           <div>
             <h2>Kelola Pengurus RT</h2>
-            <p>Daftar pengurus aktif RT 06 yang ditampilkan di halaman depan warga</p>
+            <p>Daftar pengurus aktif <span class="dynamic-rt-name">RT 06 Cemani</span> yang ditampilkan di halaman depan warga</p>
           </div>
           <button class="btn-add" onclick="openTambahPengurusModal()">＋ Tambah Pengurus</button>
         </div>
@@ -2009,7 +2009,7 @@ td { padding:14px 16px; font-size:13px; border-bottom:1px solid var(--border); c
         <div class="page-header">
           <div>
             <h2>Iuran Bulanan</h2>
-            <p>Pencatatan iuran bulanan warga RT 06</p>
+            <p>Pencatatan iuran bulanan warga <span class="dynamic-rt-name">RT 06 Cemani</span></p>
           </div>
           <div style="display: flex; gap: 8px;">
             <button class="btn-add" onclick="cetakLaporanIuran()" style="background: #3b82f6; border-color: #3b82f6;">🖨️ Cetak PDF</button>
@@ -2113,7 +2113,7 @@ td { padding:14px 16px; font-size:13px; border-bottom:1px solid var(--border); c
         <div class="page-header">
           <div>
             <h2>Agenda Kegiatan & Ronda</h2>
-            <p>Jadwal kerja bakti, rapat warga, dan ronda malam RT 06</p>
+            <p>Jadwal kerja bakti, rapat warga, dan ronda malam <span class="dynamic-rt-name">RT 06 Cemani</span></p>
           </div>
           <button class="btn-add" onclick="openTambahAgendaModal()">＋ Tambah Agenda</button>
         </div>
@@ -2154,7 +2154,7 @@ td { padding:14px 16px; font-size:13px; border-bottom:1px solid var(--border); c
         <div class="page-header">
           <div>
             <h2>Musyawarah & Polling Warga</h2>
-            <p>Kelola jajak pendapat digital untuk pengambilan keputusan warga RT 06</p>
+            <p>Kelola jajak pendapat digital untuk pengambilan keputusan warga <span class="dynamic-rt-name">RT 06 Cemani</span></p>
           </div>
           <button class="btn-add" onclick="openTambahPollingModal()">＋ Buat Polling Baru</button>
         </div>
@@ -2194,7 +2194,7 @@ td { padding:14px 16px; font-size:13px; border-bottom:1px solid var(--border); c
         <div class="page-header">
           <div>
             <h2>Kelola Galeri Kegiatan</h2>
-            <p>Kelola tautan album Google Photos untuk dokumentasi kegiatan warga RT 06</p>
+            <p>Kelola tautan album Google Photos untuk dokumentasi kegiatan warga <span class="dynamic-rt-name">RT 06 Cemani</span></p>
           </div>
           <button class="btn-add" onclick="openTambahGaleriModal()">+ Tambah Album</button>
         </div>
@@ -2583,8 +2583,35 @@ async function initTenant() {
   }
 }
 
+function getRtRwFromCurrentRt() {
+  const name = currentRtName || 'RT 06 RW 17 Ngruki Cemani';
+  const rtMatch = name.match(/RT\s*(\d+)/i);
+  const rwMatch = name.match(/RW\s*(\d+)/i);
+  const rtNum = rtMatch ? rtMatch[1] : '06';
+  const rwNum = rwMatch ? rwMatch[1] : '17';
+  return { rt: rtNum, rw: rwNum };
+}
+
 function updateRtTitlesInUI() {
   const name = currentRtName || 'RT 06 Cemani';
+  document.title = `SiRT — ${name}`;
+  
+  const rtrw = getRtRwFromCurrentRt();
+  
+  // Update dynamic placeholders
+  document.querySelectorAll('.dynamic-rt-name').forEach(el => {
+    el.textContent = name;
+  });
+  document.querySelectorAll('.dynamic-rt-num').forEach(el => {
+    el.textContent = rtrw.rt;
+  });
+  document.querySelectorAll('.dynamic-rt-badge').forEach(el => {
+    el.textContent = `🏘️ ${name} · Grogol · Sukoharjo`;
+  });
+  const pubStatKasTitle = document.getElementById('pub-stat-kas-title');
+  if (pubStatKasTitle) {
+    pubStatKasTitle.textContent = `Kas RT ${rtrw.rt}`;
+  }
   
   // 1. Update logo subtitles
   document.querySelectorAll('.pub-logo-sub').forEach(el => {
@@ -3500,11 +3527,13 @@ function cetakLaporanIuran() {
   const monthIndex = parseInt(monthStr, 10) - 1;
   const monthYearLabel = `${monthNamesIndo[monthIndex]} ${yearStr}`;
   const currentDateStr = new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
+  const rtrw = getRtRwFromCurrentRt();
+  const name = currentRtName || 'RT 06 Cemani';
   const kopHtml = `
     <div class="print-report">
       <div class="print-report-header">
-        <div style="font-size: 14px; font-weight: 800; letter-spacing: 1px;">PENGURUS RUKUN TETANGGA 06 / RW 17</div>
-        <div style="font-size: 16px; font-weight: 900; color: #059669; margin-top: 2px;">PERKUMPULAN WARGA NGRUKI CEMANI</div>
+        <div style="font-size: 14px; font-weight: 800; letter-spacing: 1px; text-transform: uppercase;">PENGURUS RUKUN TETANGGA ${rtrw.rt} / RW ${rtrw.rw}</div>
+        <div style="font-size: 16px; font-weight: 900; color: #059669; margin-top: 2px; text-transform: uppercase;">PERKUMPULAN WARGA ${name.toUpperCase()}</div>
         <div style="font-size: 10px; color: #475569; margin-top: 4px;">Kel. Cemani, Kec. Grogol, Kab. Sukoharjo, Jawa Tengah 57552</div>
       </div>
   `;
@@ -3639,13 +3668,13 @@ function cetakLaporanIuran() {
       <div class="print-report-signatures">
         <div class="print-sig-col">
           <div>Mengetahui,</div>
-          <div style="font-weight: 700; margin-top: 4px;">Ketua RT 06 Cemani</div>
+          <div style="font-weight: 700; margin-top: 4px;">Ketua ${name}</div>
           <div class="print-sig-space"></div>
           <div style="text-decoration: underline; font-weight: 700;">( .................................... )</div>
         </div>
         <div class="print-sig-col">
           <div>Sukoharjo, ${currentDateStr}</div>
-          <div style="font-weight: 700; margin-top: 4px;">Bendahara RT 06 Cemani</div>
+          <div style="font-weight: 700; margin-top: 4px;">Bendahara ${name}</div>
           <div class="print-sig-space"></div>
           <div style="text-decoration: underline; font-weight: 700;">( .................................... )</div>
         </div>
@@ -3667,9 +3696,15 @@ function cetakSurat(id) {
   const formattedDate = d.toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
   const year = d.getFullYear();
   const monthRoman = ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX', 'X', 'XI', 'XII'][d.getMonth()];
-  const nomorSurat = `${surat.id.toString().padStart(3, '0')}/SP/06/17/${monthRoman}/${year}`;
+  
+  const rtrw = getRtRwFromCurrentRt();
+  const name = currentRtName || 'RT 06 Cemani';
+  const nomorSurat = `${surat.id.toString().padStart(3, '0')}/SP/${rtrw.rt}/${rtrw.rw}/${monthRoman}/${year}`;
   const printArea = document.getElementById('print-area');
   
+  const ketua = allPengurus.find(p => p.jabatan && p.jabatan.toLowerCase().includes('ketua'));
+  const ketuaNama = ketua ? ketua.nama : '__________________';
+
   // Dynamic template based on jenis_surat
   const jenis = (surat.jenis_surat || '').toLowerCase();
   let judulSurat = 'SURAT PENGANTAR';
@@ -3678,23 +3713,23 @@ function cetakSurat(id) {
 
   if (jenis.includes('domisili')) {
     judulSurat = 'SURAT KETERANGAN DOMISILI';
-    isiSurat = 'Orang tersebut di atas adalah benar-benar warga RT 06 RW 17 Kelurahan Cemani, Kecamatan Grogol, Kabupaten Sukoharjo, yang saat ini berdomisili di alamat tersebut.';
+    isiSurat = `Orang tersebut di atas adalah benar-benar warga RT ${rtrw.rt} RW ${rtrw.rw} Kelurahan Cemani, Kecamatan Grogol, Kabupaten Sukoharjo, yang saat ini berdomisili di alamat tersebut.`;
     labelKeperluan = 'Surat Keterangan Domisili';
   } else if (jenis.includes('mampu') || jenis.includes('sktm')) {
     judulSurat = 'SURAT KETERANGAN TIDAK MAMPU';
-    isiSurat = 'Menerangkan bahwa orang tersebut di atas adalah benar-benar warga RT 06 RW 17 Kelurahan Cemani, Kecamatan Grogol, Kabupaten Sukoharjo. Berdasarkan data kami, yang bersangkutan berasal dari keluarga prasejahtera (tidak mampu) di lingkungan sosial kami.';
+    isiSurat = `Menerangkan bahwa orang tersebut di atas adalah benar-benar warga RT ${rtrw.rt} RW ${rtrw.rw} Kelurahan Cemani, Kecamatan Grogol, Kabupaten Sukoharjo. Berdasarkan data kami, yang bersangkutan berasal dari keluarga prasejahtera (tidak mampu) di lingkungan sosial kami.`;
     labelKeperluan = 'Surat Keterangan Tidak Mampu';
   } else {
     // Default / Pengantar RT
     judulSurat = 'SURAT PENGANTAR RT';
-    isiSurat = 'Menerangkan bahwa orang tersebut di atas adalah benar-benar warga RT 06 RW 17 Kelurahan Cemani, Kecamatan Grogol, Kabupaten Sukoharjo. Surat Pengantar ini diberikan sebagai pengantar pengurusan dokumen di tingkat Kelurahan Cemani.';
+    isiSurat = `Menerangkan bahwa orang tersebut di atas adalah benar-benar warga RT ${rtrw.rt} RW ${rtrw.rw} Kelurahan Cemani, Kecamatan Grogol, Kabupaten Sukoharjo. Surat Pengantar ini diberikan sebagai pengantar pengurusan dokumen di tingkat Kelurahan Cemani.`;
     labelKeperluan = 'Surat Pengantar';
   }
 
   printArea.innerHTML = `
     <div style="font-family: 'Times New Roman', Times, serif; padding: 40px; color: #000; background: #fff; line-height: 1.5; font-size: 14px;">
       <div style="text-align: center; border-bottom: 3px double #000; padding-bottom: 10px; margin-bottom: 20px;">
-        <h2 style="margin: 0; font-size: 18px; font-weight: bold; text-transform: uppercase;">PENGURUS RUKUN TETANGGA 06 RUKUN WARGA 17</h2>
+        <h2 style="margin: 0; font-size: 18px; font-weight: bold; text-transform: uppercase;">PENGURUS RUKUN TETANGGA ${rtrw.rt} RUKUN WARGA ${rtrw.rw}</h2>
         <h3 style="margin: 5px 0 0 0; font-size: 16px; font-weight: bold; text-transform: uppercase;">KELURAHAN CEMANI - KECAMATAN GROGOL</h3>
         <p style="margin: 5px 0 0 0; font-size: 12px; font-style: italic;">Ngruki Cemani Grogol Sukoharjo Jawa Tengah 57552</p>
       </div>
@@ -3703,13 +3738,13 @@ function cetakSurat(id) {
         <p style="margin: 5px 0 0 0; font-size: 13px;">Nomor: ${nomorSurat}</p>
       </div>
       <p style="text-indent: 40px; margin-bottom: 15px; text-align: justify;">
-        Yang bertanda tangan di bawah ini, Pengurus Rukun Tetangga (RT) 06 Rukun Warga (RW) 17 Kelurahan Cemani, Kecamatan Grogol, Kabupaten Sukoharjo, menerangkan bahwa:
+        Yang bertanda tangan di bawah ini, Pengurus Rukun Tetangga (RT) ${rtrw.rt} Rukun Warga (RW) ${rtrw.rw} Kelurahan Cemani, Kecamatan Grogol, Kabupaten Sukoharjo, menerangkan bahwa:
       </p>
       <table style="width: 100%; margin-bottom: 20px; border-collapse: collapse; margin-left: 20px;">
         <tr><td style="width: 180px; padding: 4px 0; vertical-align: top;">Nama Lengkap</td><td style="width: 15px; padding: 4px 0; vertical-align: top;">:</td><td style="padding: 4px 0; font-weight: bold; text-transform: uppercase;">${escapeHtml(surat.nama_pemohon)}</td></tr>
         <tr><td style="padding: 4px 0; vertical-align: top;">Nomor Kartu Keluarga</td><td style="padding: 4px 0; vertical-align: top;">:</td><td style="padding: 4px 0;">${escapeHtml(surat.no_kk)}</td></tr>
         <tr><td style="padding: 4px 0; vertical-align: top;">Nomor WhatsApp</td><td style="padding: 4px 0; vertical-align: top;">:</td><td style="padding: 4px 0;">${escapeHtml(surat.no_wa)}</td></tr>
-        <tr><td style="padding: 4px 0; vertical-align: top;">Alamat Domisili</td><td style="padding: 4px 0; vertical-align: top;">:</td><td style="padding: 4px 0;">Ngruki RT 06 / RW 17, Cemani, Grogol, Sukoharjo</td></tr>
+        <tr><td style="padding: 4px 0; vertical-align: top;">Alamat Domisili</td><td style="padding: 4px 0; vertical-align: top;">:</td><td style="padding: 4px 0;">Ngruki RT ${rtrw.rt} / RW ${rtrw.rw}, Cemani, Grogol, Sukoharjo</td></tr>
         <tr><td style="padding: 4px 0; vertical-align: top;">Menerangkan Bahwa</td><td style="padding: 4px 0; vertical-align: top;">:</td><td style="padding: 4px 0; text-align: justify;">${isiSurat}</td></tr>
       </table>
       <p style="margin-bottom: 20px; text-align: justify;">${labelKeperluan} ini diberikan untuk keperluan: <strong style="text-transform: uppercase;">${escapeHtml(surat.keperluan)}</strong>.</p>
@@ -3718,12 +3753,12 @@ function cetakSurat(id) {
         <table style="width: 100%; border-collapse: collapse;">
           <tr>
             <td style="width: 50%; text-align: center; vertical-align: top;">
-              <p style="margin-bottom: 70px;">Mengetahui,<br>Ketua RW 17 Cemani</p>
+              <p style="margin-bottom: 70px;">Mengetahui,<br>Ketua RW ${rtrw.rw} Cemani</p>
               <p style="font-weight: bold; text-decoration: underline;">( Bpk. __________________ )</p>
             </td>
             <td style="width: 50%; text-align: center; vertical-align: top;">
-              <p style="margin-bottom: 70px;">Cemani, ${formattedDate}<br>Ketua RT 06 RW 17 Ngruki</p>
-              <p style="font-weight: bold; text-decoration: underline;">( Bpk. H. Mulyono )</p>
+              <p style="margin-bottom: 70px;">Cemani, ${formattedDate}<br>Ketua RT ${rtrw.rt} RW ${rtrw.rw} Ngruki</p>
+              <p style="font-weight: bold; text-decoration: underline;">( Bpk. ${ketuaNama} )</p>
             </td>
           </tr>
         </table>
@@ -4179,7 +4214,7 @@ function renderPublicWarga() {
         <div class="pengurus-info" style="text-align: left;">
           <div class="pengurus-role-badge" style="background: ${badgeBg}; color: ${badgeColor}; font-size: 9px; padding: 2px 6px; margin-bottom: 2px; text-transform: uppercase;">${badgeText}</div>
           <div class="pengurus-name" style="font-size: 14.5px; font-weight: 700; color: var(--text);">${escapeHtml(w.nama_kepala)}</div>
-          <div class="pengurus-address" style="font-size: 11px; color: var(--text-light); margin-top: 3px; display: flex; align-items: center; gap: 4px;">📍 <span>${escapeHtml(w.alamat || 'Ngruki RT 06 / RW 17, Cemani')}</span></div>
+          <div class="pengurus-address" style="font-size: 11px; color: var(--text-light); margin-top: 3px; display: flex; align-items: center; gap: 4px;">📍 <span>${escapeHtml(w.alamat || (currentRtName || 'Ngruki RT 06 / RW 17, Cemani'))}</span></div>
         </div>
       </div>
     `;
@@ -4213,10 +4248,10 @@ function renderPublicPengurus() {
         <div class="pengurus-info" style="text-align: left;">
           <div class="pengurus-role-badge" style="font-size: 9px; padding: 2px 6px; margin-bottom: 2px;">${escapeHtml(p.jabatan)}</div>
           <div class="pengurus-name" style="font-size: 14.5px; font-weight: 700; color: var(--text);">${escapeHtml(p.nama)}</div>
-          <div class="pengurus-address" style="font-size: 11px; color: var(--text-light); margin-top: 2px;">📍 ${escapeHtml(p.alamat || 'Ngruki RT 06 / RW 17, Cemani')}</div>
+          <div class="pengurus-address" style="font-size: 11px; color: var(--text-light); margin-top: 2px;">📍 ${escapeHtml(p.alamat || (currentRtName || 'Ngruki RT 06 / RW 17, Cemani'))}</div>
         </div>
         ${waClean ? `
-          <a class="pengurus-wa-btn" href="https://wa.me/${waClean}?text=Halo%20${encodeURIComponent(p.jabatan)}%20RT%2006" target="_blank">
+          <a class="pengurus-wa-btn" href="https://wa.me/${waClean}?text=Halo%20${encodeURIComponent(p.jabatan)}%20${encodeURIComponent(currentRtName || 'RT 06')}" target="_blank">
             <span>💬</span> Hubungi
           </a>
         ` : ''}
@@ -4239,7 +4274,7 @@ function openTambahPengurusModal() {
   document.getElementById('pengurus-jabatan').value = '';
   document.getElementById('pengurus-wa').value = '628';
   document.getElementById('pengurus-urutan').value = allPengurus.length + 1;
-  document.getElementById('pengurus-alamat').value = 'Ngruki RT 06 / RW 17, Cemani';
+  document.getElementById('pengurus-alamat').value = currentRtName || 'Ngruki RT 06 / RW 17, Cemani';
   document.getElementById('pengurus-modal').classList.add('open');
 }
 
@@ -4502,7 +4537,7 @@ async function renderPublicGaleri() {
   grid.innerHTML = sortedGaleri.map(album => {
     const formattedDate = formatDate(album.tanggal);
     const escapedTitle = escapeHtml(album.nama);
-    const escapedDesc = escapeHtml(album.deskripsi || 'Dokumentasi kegiatan warga RT 06.');
+    const escapedDesc = escapeHtml(album.deskripsi || ('Dokumentasi kegiatan warga ' + (currentRtName || 'RT 06 Cemani')));
     const linkUrl = album.link.startsWith('http') ? album.link : 'https://' + album.link;
     
     const coverUrl = album.cover_url && album.cover_url.trim() !== ''
@@ -4703,7 +4738,7 @@ async function renderPublicInventaris() {
     return `
       <div class="inventaris-card">
         <div class="inventaris-card-header">
-          📦 ASET RT 06
+          📦 ASET ${currentRtName || 'RT 06 Cemani'}
         </div>
         <div class="inventaris-card-body">
           <div class="inventaris-card-title">${escapeHtml(item.nama_barang)}</div>
