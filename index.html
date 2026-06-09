@@ -1852,7 +1852,14 @@ td { padding:14px 16px; font-size:13px; border-bottom:1px solid var(--border); c
     <label class="form-label">Email Admin</label>
     <input class="form-input" type="text" id="login-username" placeholder="admin@email.com">
     <label class="form-label">Password</label>
-    <input class="form-input" type="password" id="login-password" placeholder="••••••••">
+    <div style="position: relative; width: 100%;">
+      <input class="form-input" type="password" id="login-password" placeholder="••••••••" style="padding-right: 42px; width: 100%;">
+      <button id="toggle-password-btn" onclick="toggleLoginPassword()" style="position: absolute; right: 12px; top: 50%; transform: translateY(-50%); background: none; border: none; cursor: pointer; font-size: 16px; color: var(--text-light); outline: none; padding: 0;">👁️</button>
+    </div>
+    <div style="display: flex; align-items: center; gap: 8px; margin-top: 14px; margin-bottom: 16px; text-align: left; width: 100%;">
+      <input type="checkbox" id="login-remember" style="cursor: pointer; width: auto; margin: 0;">
+      <label for="login-remember" style="font-size: 12px; color: var(--text-light); cursor: pointer; user-select: none; margin: 0;">Simpan email dan password</label>
+    </div>
     <button class="btn-login-submit" onclick="doAdminLogin()">Masuk ke Panel Admin →</button>
     <div class="login-hint-text">Gunakan email & password akun Admin RT Kakak</div>
   </div>
@@ -3158,8 +3165,47 @@ function downloadCSV(csv,filename) { const blob = new Blob([csv],{type:'text/csv
 
 function openAddModal() { document.getElementById('add-modal').classList.add('open'); }
 function closeAddModal() { document.getElementById('add-modal').classList.remove('open'); }
-function openLoginModal() { document.getElementById('login-modal').classList.add('open'); }
-function closeLoginModal() { document.getElementById('login-modal').classList.remove('open'); }
+function openLoginModal() {
+  const email = localStorage.getItem('rt_admin_email') || '';
+  const password = localStorage.getItem('rt_admin_password') || '';
+  const remember = localStorage.getItem('rt_admin_remember') === 'true';
+  
+  const emailInput = document.getElementById('login-username');
+  const pwdInput = document.getElementById('login-password');
+  const rememberCheck = document.getElementById('login-remember');
+  const toggleBtn = document.getElementById('toggle-password-btn');
+  
+  if (emailInput) emailInput.value = email;
+  if (pwdInput) {
+    pwdInput.value = password;
+    pwdInput.type = 'password';
+  }
+  if (rememberCheck) rememberCheck.checked = remember;
+  if (toggleBtn) toggleBtn.textContent = '👁️';
+  
+  document.getElementById('login-modal').classList.add('open');
+}
+
+function closeLoginModal() {
+  const pwdInput = document.getElementById('login-password');
+  if (pwdInput) pwdInput.type = 'password';
+  const toggleBtn = document.getElementById('toggle-password-btn');
+  if (toggleBtn) toggleBtn.textContent = '👁️';
+  document.getElementById('login-modal').classList.remove('open');
+}
+
+function toggleLoginPassword() {
+  const pwdInput = document.getElementById('login-password');
+  const toggleBtn = document.getElementById('toggle-password-btn');
+  if (!pwdInput) return;
+  if (pwdInput.type === 'password') {
+    pwdInput.type = 'text';
+    if (toggleBtn) toggleBtn.textContent = '🙈';
+  } else {
+    pwdInput.type = 'password';
+    if (toggleBtn) toggleBtn.textContent = '👁️';
+  }
+}
 document.getElementById('login-modal')?.addEventListener('click',function(e){if(e.target===this)closeLoginModal();});
 document.getElementById('add-modal')?.addEventListener('click',function(e){if(e.target===this)closeAddModal();});
 document.getElementById('bayar-modal')?.addEventListener('click',function(e){if(e.target===this)closeBayarModal();});
@@ -3211,6 +3257,17 @@ async function doAdminLogin() {
       return;
     }
     
+    const remember = document.getElementById('login-remember')?.checked;
+    if (remember) {
+      localStorage.setItem('rt_admin_email', email);
+      localStorage.setItem('rt_admin_password', password);
+      localStorage.setItem('rt_admin_remember', 'true');
+    } else {
+      localStorage.removeItem('rt_admin_email');
+      localStorage.removeItem('rt_admin_password');
+      localStorage.removeItem('rt_admin_remember');
+    }
+
     closeLoginModal();
     document.getElementById('public-shell').style.display = 'none';
     document.getElementById('admin-shell').style.display = 'block';
