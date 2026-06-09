@@ -895,6 +895,40 @@ body { font-family:'Plus Jakarta Sans',sans-serif; background:var(--bg); color:v
   animation: fadeInUp 0.45s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
+/* Page Header styles */
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+  gap: 16px;
+}
+.page-header > div {
+  flex: 1;
+}
+.page-header h2 {
+  font-size: 24px;
+  font-weight: 800;
+  color: var(--text);
+  margin-bottom: 6px;
+  letter-spacing: -0.5px;
+  line-height: 1.25;
+}
+.page-header p {
+  font-size: 13.5px;
+  color: var(--text-light);
+  line-height: 1.5;
+  margin: 0;
+}
+.page-header .btn-add {
+  flex-shrink: 0;
+}
+.page-header-actions {
+  display: flex;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
 /* ADMIN CARDS & TABLES */
 .stats-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:16px; margin-bottom:24px; }
 .stat-card {
@@ -1162,6 +1196,31 @@ td { padding:14px 16px; font-size:13px; border-bottom:1px solid var(--border); c
 }
 
 @media(max-width: 700px) {
+  .page-header {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 16px;
+    margin-bottom: 20px;
+  }
+  .page-header h2 {
+    font-size: 20px;
+    margin-bottom: 6px;
+  }
+  .page-header p {
+    font-size: 13px;
+  }
+  .page-header .btn-add {
+    width: 100%;
+    justify-content: center;
+  }
+  .page-header-actions {
+    width: 100%;
+  }
+  .page-header-actions .btn-add {
+    flex: 1;
+    justify-content: center;
+  }
+
   .pengurus-sub-grid {
     grid-template-columns: 1fr;
   }
@@ -2018,7 +2077,7 @@ td { padding:14px 16px; font-size:13px; border-bottom:1px solid var(--border); c
             <h2>Iuran Bulanan</h2>
             <p>Pencatatan iuran bulanan warga <span class="dynamic-rt-name">RT 06 Cemani</span></p>
           </div>
-          <div style="display: flex; gap: 8px;">
+          <div class="page-header-actions">
             <button class="btn-add" onclick="cetakLaporanIuran()" style="background: #3b82f6; border-color: #3b82f6;">🖨️ Cetak PDF</button>
             <button class="btn-add" onclick="openCatatPembayaran()">✔ Catat Pembayaran</button>
           </div>
