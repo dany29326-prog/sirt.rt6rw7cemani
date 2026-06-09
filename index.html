@@ -1848,13 +1848,13 @@ td { padding:14px 16px; font-size:13px; border-bottom:1px solid var(--border); c
     <button class="modal-close" onclick="closeLoginModal()">✕</button>
     <div style="font-size:28px">🔐</div>
     <div class="login-modal-title">Login Admin RT</div>
-    <div class="login-modal-sub">Khusus pengurus RT 06</div>
-    <label class="form-label">Username</label>
-    <input class="form-input" type="text" id="login-username" placeholder="admin">
+    <div class="login-modal-sub" id="login-modal-sub-rt">Khusus pengurus RT</div>
+    <label class="form-label">Email Admin</label>
+    <input class="form-input" type="text" id="login-username" placeholder="admin@email.com">
     <label class="form-label">Password</label>
     <input class="form-input" type="password" id="login-password" placeholder="••••••••">
     <button class="btn-login-submit" onclick="doAdminLogin()">Masuk ke Panel Admin →</button>
-    <div class="login-hint-text">Gunakan username: admin | password: 12345678</div>
+    <div class="login-hint-text">Gunakan email & password akun Admin RT Kakak</div>
   </div>
 </div>
 <!-- PUBLIC MODAL: PINJAM BARANG -->
@@ -2516,6 +2516,10 @@ if (window.supabase) {
   console.error('Inisialisasi Supabase gagal: Supabase SDK tidak ditemukan. Pastikan terhubung ke internet.');
 }
 
+let currentRtId = null;
+let currentRtSubdomain = '';
+let currentRtName = '';
+
 let allWarga = [], filteredWarga = [], currentPage = 1, itemsPerPage = 10, currentBulan = '2025-06', allIuran = [], allKas = [], allPengumuman = [], allPengajuanSurat = [];
 let appSettings = {};
 let allAgenda = [], filteredAgenda = [];
@@ -2528,6 +2532,92 @@ let currentIuranYear = 2025;
 let pubIuranChart = null, pubKasChart = null, admIuranChart = null, admKasChart = null;
 
 function escapeHtml(str) { if(!str) return ''; return str.replace(/[&<>]/g, function(m) { if(m==='&') return '&amp;'; if(m==='<') return '&lt;'; if(m==='>') return '&gt;'; return m; }); }
+
+async function initTenant() {
+  if (!supabase) return;
+  const urlParams = new URLSearchParams(window.location.search);
+  let rtParam = urlParams.get('rt');
+  
+  if (!rtParam) {
+    const host = window.location.hostname;
+    const parts = host.split('.');
+    if (parts.length > 2) {
+      rtParam = parts[0];
+    }
+  }
+  
+  if (!rtParam || rtParam === 'localhost' || rtParam === '127.0.0.1') {
+    rtParam = 'rt06rw17cemani';
+  }
+  
+  currentRtSubdomain = rtParam.toLowerCase();
+  
+  try {
+    const { data, error } = await supabase
+      .from('rts')
+      .select('*')
+      .eq('subdomain', currentRtSubdomain)
+      .single();
+      
+    if (error || !data) {
+      console.warn('Subdomain RT tidak terdaftar, menggunakan default RT 06 Cemani');
+      const { data: defaultData } = await supabase
+        .from('rts')
+        .select('*')
+        .eq('subdomain', 'rt06rw17cemani')
+        .single();
+      if (defaultData) {
+        currentRtId = defaultData.id;
+        currentRtSubdomain = defaultData.subdomain;
+        currentRtName = defaultData.name;
+      }
+    } else {
+      currentRtId = data.id;
+      currentRtSubdomain = data.subdomain;
+      currentRtName = data.name;
+    }
+    
+    updateRtTitlesInUI();
+  } catch (err) {
+    console.error('Gagal menginisialisasi tenant RT:', err.message);
+  }
+}
+
+function updateRtTitlesInUI() {
+  const name = currentRtName || 'RT 06 Cemani';
+  
+  // 1. Update logo subtitles
+  document.querySelectorAll('.pub-logo-sub').forEach(el => {
+    el.textContent = name;
+  });
+  
+  // 2. Update section titles
+  const pengurusTitle = document.querySelector('#pub-pengurus .sec-title');
+  if (pengurusTitle) pengurusTitle.innerHTML = `👑 Pengurus ${name}`;
+  
+  const wargaTitle = document.getElementById('pub-warga')?.querySelector('.sec-title');
+  if (wargaTitle) wargaTitle.innerHTML = `👥 Daftar Warga ${name}`;
+  
+  const agendaTitle = document.getElementById('pub-agenda')?.querySelector('.sec-title');
+  if (agendaTitle) agendaTitle.innerHTML = `📅 Agenda & Ronda Malam ${name}`;
+
+  const pollingTitle = document.getElementById('pub-polling')?.querySelector('.sec-title');
+  if (pollingTitle) pollingTitle.innerHTML = `🗳️ Musyawarah & Polling ${name}`;
+
+  const galeriTitle = document.getElementById('pub-galeri')?.querySelector('.sec-title');
+  if (galeriTitle) galeriTitle.innerHTML = `📸 Galeri Kegiatan ${name}`;
+
+  const inventarisTitle = document.getElementById('pub-inventaris')?.querySelector('.sec-title');
+  if (inventarisTitle) inventarisTitle.innerHTML = `📦 Inventaris & Aset ${name}`;
+
+  // 3. Update admin sidebar
+  const adminRtName = document.querySelector('.sidebar-rt .rt-name');
+  if (adminRtName) adminRtName.textContent = name;
+
+  // 4. Update login modal sub text
+  const loginModalSub = document.getElementById('login-modal-sub-rt');
+  if (loginModalSub) loginModalSub.textContent = `Khusus pengurus ${name}`;
+}
 function formatRupiah(angka) { return new Intl.NumberFormat('id-ID', {style:'currency',currency:'IDR',minimumFractionDigits:0}).format(angka); }
 function showToast(msg) { const t = document.getElementById('toast'); document.getElementById('toast-msg').textContent = msg; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),2800); }
 function formatDate(dateStr) { if(!dateStr) return '-'; return new Date(dateStr).toLocaleDateString('id-ID'); }
@@ -2752,21 +2842,23 @@ function renderAdminCharts() {
 }
 
 
-async function loadWarga() { const {data,error} = await supabase.from('warga').select('*').order('nama_kepala'); if(error) return []; allWarga = data; filteredWarga = [...allWarga]; return data; }
-async function loadIuran() { const {data,error} = await supabase.from('iuran').select('*'); if(error) return []; allIuran = data; return data; }
-async function loadKas() { const {data,error} = await supabase.from('kas').select('*').order('tanggal',{ascending:false}); if(error) return []; allKas = data; return data; }
-async function loadPengumuman() { const {data,error} = await supabase.from('pengumuman').select('*').order('created_at',{ascending:false}); if(error) return []; allPengumuman = data; return data; }
-async function loadPengajuanSurat() { const {data,error} = await supabase.from('pengajuan_surat').select('*').order('created_at',{ascending:false}); if(error) return []; allPengajuanSurat = data; return data; }
+async function loadWarga() { const {data,error} = await supabase.from('warga').select('*').eq('rt_id', currentRtId).order('nama_kepala'); if(error) return []; allWarga = data; filteredWarga = [...allWarga]; return data; }
+async function loadIuran() { const {data,error} = await supabase.from('iuran').select('*').eq('rt_id', currentRtId); if(error) return []; allIuran = data; return data; }
+async function loadKas() { const {data,error} = await supabase.from('kas').select('*').eq('rt_id', currentRtId).order('tanggal',{ascending:false}); if(error) return []; allKas = data; return data; }
+async function loadPengumuman() { const {data,error} = await supabase.from('pengumuman').select('*').eq('rt_id', currentRtId).order('created_at',{ascending:false}); if(error) return []; allPengumuman = data; return data; }
+async function loadPengajuanSurat() { const {data,error} = await supabase.from('pengajuan_surat').select('*').eq('rt_id', currentRtId).order('created_at',{ascending:false}); if(error) return []; allPengajuanSurat = data; return data; }
 
 async function loadSettings() {
-  const { data, error } = await supabase.from('setelan').select('*');
+  const { data, error } = await supabase.from('setelan').select('*').eq('rt_id', currentRtId);
   if (error) return;
   appSettings = {};
-  data.forEach(item => { appSettings[item.kunci] = item.nilai; });
+  if (data) {
+    data.forEach(item => { appSettings[item.kunci] = item.nilai; });
+  }
 }
 
 async function loadAgenda() {
-  const { data, error } = await supabase.from('agenda').select('*').order('tanggal', { ascending: true });
+  const { data, error } = await supabase.from('agenda').select('*').eq('rt_id', currentRtId).order('tanggal', { ascending: true });
   if (error) return [];
   allAgenda = data;
   filteredAgenda = [...allAgenda];
@@ -2774,15 +2866,15 @@ async function loadAgenda() {
 }
 
 async function loadPollingData() {
-  const { data: pollingData, error: err1 } = await supabase.from('polling').select('*').order('created_at', { ascending: false });
-  const { data: voteData, error: err2 } = await supabase.from('polling_vote').select('*');
+  const { data: pollingData, error: err1 } = await supabase.from('polling').select('*').eq('rt_id', currentRtId).order('created_at', { ascending: false });
+  const { data: voteData, error: err2 } = await supabase.from('polling_vote').select('*').eq('rt_id', currentRtId);
   if (err1 || err2) return;
-  allPolling = pollingData;
-  allVotes = voteData;
+  allPolling = pollingData || [];
+  allVotes = voteData || [];
 }
 
 async function loadPengurus() {
-  const { data, error } = await supabase.from('pengurus').select('*').order('urutan', { ascending: true });
+  const { data, error } = await supabase.from('pengurus').select('*').eq('rt_id', currentRtId).order('urutan', { ascending: true });
   if (error) return [];
   allPengurus = data;
   return data;
@@ -2828,7 +2920,7 @@ function filterWarga() {
 
 async function simpanWargaBaru() {
   const nama = document.getElementById('add-nama')?.value; if(!nama) { showToast('Nama wajib diisi'); return; }
-  await supabase.from('warga').insert([{nama_kepala:nama, nik:document.getElementById('add-nik')?.value||'', no_kk:document.getElementById('add-no-kk')?.value||'', no_wa:document.getElementById('add-no-wa')?.value||'', alamat:document.getElementById('add-alamat')?.value||'', jumlah_jiwa:parseInt(document.getElementById('add-jumlah')?.value)||1, status:document.getElementById('add-status')?.value||'aktif'}]);
+  await supabase.from('warga').insert([{rt_id:currentRtId, nama_kepala:nama, nik:document.getElementById('add-nik')?.value||'', no_kk:document.getElementById('add-no-kk')?.value||'', no_wa:document.getElementById('add-no-wa')?.value||'', alamat:document.getElementById('add-alamat')?.value||'', jumlah_jiwa:parseInt(document.getElementById('add-jumlah')?.value)||1, status:document.getElementById('add-status')?.value||'aktif'}]);
   showToast('Warga ditambahkan'); closeAddModal(); await loadWarga(); filterWarga();
 }
 
@@ -2910,7 +3002,7 @@ async function simpanPembayaran() {
   const status = jumlah>=iuranNominal?'lunas':(jumlah>0?'sebagian':'belum');
   const existing = allIuran.find(i=>i.warga_id==wargaId&&i.bulan===bulan);
   if(existing) await supabase.from('iuran').update({status, nominal:jumlah, tgl_bayar:new Date().toISOString().split('T')[0]}).eq('id',existing.id);
-  else await supabase.from('iuran').insert([{warga_id:wargaId, bulan, nominal:jumlah, status, tgl_bayar:new Date().toISOString().split('T')[0]}]);
+  else await supabase.from('iuran').insert([{rt_id:currentRtId, warga_id:wargaId, bulan, nominal:jumlah, status, tgl_bayar:new Date().toISOString().split('T')[0]}]);
   showToast('Pembayaran dicatat'); closeBayarModal(); await renderIuranTable();
 }
 
@@ -2939,7 +3031,7 @@ async function renderKasTable() {
 async function simpanTransaksiKas() {
   const tanggal = document.getElementById('kas-tanggal')?.value, keterangan = document.getElementById('kas-keterangan')?.value, jenis = document.getElementById('kas-jenis')?.value, jumlah = parseInt(document.getElementById('kas-jumlah')?.value);
   if(!tanggal||!keterangan||!jumlah) { showToast('Lengkapi data'); return; }
-  await supabase.from('kas').insert([{tanggal,keterangan,jenis,jumlah}]);
+  await supabase.from('kas').insert([{rt_id:currentRtId, tanggal,keterangan,jenis,jumlah}]);
   showToast('Transaksi dicatat'); closeKasModal(); await renderKasTable();
 }
 
@@ -2960,7 +3052,7 @@ async function renderPengumuman() {
 async function simpanPengumuman() {
   const judul = document.getElementById('pengumuman-judul')?.value, isi = document.getElementById('pengumuman-isi')?.value, kategori = document.getElementById('pengumuman-kategori')?.value;
   if(!judul||!isi) { showToast('Judul dan isi wajib diisi'); return; }
-  await supabase.from('pengumuman').insert([{judul,isi,kategori,is_pinned:false}]);
+  await supabase.from('pengumuman').insert([{rt_id:currentRtId, judul,isi,kategori,is_pinned:false}]);
   showToast('Pengumuman dipublikasikan'); closePengumumanModal(); await renderPengumuman();
 }
 async function hapusPengumuman(id) { if(!confirm('Yakin hapus?')) return; await supabase.from('pengumuman').delete().eq('id',id); showToast('Pengumuman dihapus'); await renderPengumuman(); }
@@ -3054,59 +3146,84 @@ document.getElementById('barang-modal')?.addEventListener('click',function(e){if
 document.getElementById('pinjam-barang-modal')?.addEventListener('click',function(e){if(e.target===this)closePinjamBarangModal();});
 
 async function doAdminLogin() {
-  const username = document.getElementById('login-username')?.value;
+  const email = document.getElementById('login-username')?.value;
   const password = document.getElementById('login-password')?.value;
   
-  if (!username || !password) {
-    showToast('Lengkapi username dan password');
+  if (!email || !password) {
+    showToast('Lengkapi email dan password');
     return;
   }
   
   try {
-    await loadSettings();
-    const correctPassword = appSettings['admin_password'] || '12345678';
+    const { data: authData, error: authError } = await supabase.auth.signInWithPassword({
+      email: email,
+      password: password
+    });
     
-    if (username === 'admin' && password === correctPassword) {
-      closeLoginModal();
-      document.getElementById('public-shell').style.display = 'none';
-      document.getElementById('admin-shell').style.display = 'block';
-      document.querySelector('.wa-float')?.style.setProperty('display','none');
-      const d=new Date(); 
-      document.getElementById('topbar-date').textContent = d.toLocaleDateString('id-ID',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
-      showToast('Selamat datang, Admin!');
-      
-      Promise.all([
-        loadWarga(),
-        loadIuran(),
-        loadKas(),
-        loadPengumuman(),
-        loadPengajuanSurat(),
-        loadAgenda(),
-        loadPollingData(),
-        loadPengurus()
-      ]).then(async()=>{
-        await renderWargaTable(); 
-        await renderIuranTable(); 
-        await renderKasTable(); 
-        await renderPengumuman(); 
-        await renderSuratTable(); 
-        await renderAgendaTable();
-        await renderPollingAdmin();
-        await renderPengurusTable();
-        await renderDashboard();
-        
-        initIuranControls();
-      });
-    } else { 
-      showToast('Username atau password salah'); 
+    if (authError) {
+      showToast('Gagal login: ' + authError.message);
+      return;
     }
+    
+    const { data: memberData, error: memberError } = await supabase
+      .from('rt_members')
+      .select('role, rt_id')
+      .eq('user_id', authData.user.id)
+      .eq('rt_id', currentRtId)
+      .single();
+      
+    if (memberError || !memberData) {
+      showToast('Anda bukan anggota dari RT ini!');
+      await supabase.auth.signOut();
+      return;
+    }
+    
+    if (memberData.role !== 'admin') {
+      showToast('Akses ditolak: Anda bukan Admin untuk RT ini!');
+      await supabase.auth.signOut();
+      return;
+    }
+    
+    closeLoginModal();
+    document.getElementById('public-shell').style.display = 'none';
+    document.getElementById('admin-shell').style.display = 'block';
+    document.getElementById('login-username').value = '';
+    document.getElementById('login-password').value = '';
+    document.querySelector('.wa-float')?.style.setProperty('display','none');
+    
+    const d=new Date(); 
+    document.getElementById('topbar-date').textContent = d.toLocaleDateString('id-ID',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
+    showToast('Selamat datang, Admin!');
+    
+    Promise.all([
+      loadWarga(),
+      loadIuran(),
+      loadKas(),
+      loadPengumuman(),
+      loadPengajuanSurat(),
+      loadAgenda(),
+      loadPollingData(),
+      loadPengurus()
+    ]).then(async()=>{
+      await renderWargaTable(); 
+      await renderIuranTable(); 
+      await renderKasTable(); 
+      await renderPengumuman(); 
+      await renderSuratTable(); 
+      await renderAgendaTable();
+      await renderPollingAdmin();
+      await renderPengurusTable();
+    });
   } catch(err) {
     showToast('Koneksi internet bermasalah/gagal login');
     console.error(err);
   }
 }
 
-function doAdminLogout() { 
+async function doAdminLogout() { 
+  if (supabase) {
+    await supabase.auth.signOut();
+  }
   document.getElementById('admin-shell').style.display='none'; 
   document.getElementById('public-shell').style.display='block'; 
   document.querySelector('.wa-float')?.style.setProperty('display','flex'); 
@@ -3269,6 +3386,7 @@ async function kirimSurat() {
   }
   
   const { error } = await supabase.from('pengajuan_surat').insert([{
+    rt_id: currentRtId,
     nama_pemohon: nama,
     no_kk: nokk,
     no_wa: wa,
@@ -3335,8 +3453,8 @@ async function simpanSetelanParameter() {
     showToast('Lengkapi nominal iuran dan rekening');
     return;
   }
-  const { error: err1 } = await supabase.from('setelan').update({ nilai: nominal.toString() }).eq('kunci', 'nominal_iuran');
-  const { error: err2 } = await supabase.from('setelan').update({ nilai: rekening }).eq('kunci', 'rekening_pembayaran');
+  const { error: err1 } = await supabase.from('setelan').upsert({ rt_id: currentRtId, kunci: 'nominal_iuran', nilai: nominal.toString() });
+  const { error: err2 } = await supabase.from('setelan').upsert({ rt_id: currentRtId, kunci: 'rekening_pembayaran', nilai: rekening });
   if (err1 || err2) {
     showToast('Gagal menyimpan setelan: ' + (err1?.message || err2?.message));
   } else {
@@ -3350,14 +3468,8 @@ async function simpanSetelanPassword() {
   const oldPwd = document.getElementById('setelan-pwd-old').value;
   const newPwd = document.getElementById('setelan-pwd-new').value;
   const confirmPwd = document.getElementById('setelan-pwd-confirm').value;
-  if (!oldPwd || !newPwd || !confirmPwd) {
-    showToast('Lengkapi semua field password');
-    return;
-  }
-  await loadSettings();
-  const currentPwd = appSettings['admin_password'] || '12345678';
-  if (oldPwd !== currentPwd) {
-    showToast('Password lama salah');
+  if (!newPwd || !confirmPwd) {
+    showToast('Lengkapi password baru dan konfirmasi');
     return;
   }
   if (newPwd !== confirmPwd) {
@@ -3368,7 +3480,7 @@ async function simpanSetelanPassword() {
     showToast('Password minimal 6 karakter');
     return;
   }
-  const { error } = await supabase.from('setelan').update({ nilai: newPwd }).eq('kunci', 'admin_password');
+  const { error } = await supabase.auth.updateUser({ password: newPwd });
   if (error) {
     showToast('Gagal memperbarui password: ' + error.message);
   } else {
@@ -3376,7 +3488,6 @@ async function simpanSetelanPassword() {
     document.getElementById('setelan-pwd-old').value = '';
     document.getElementById('setelan-pwd-new').value = '';
     document.getElementById('setelan-pwd-confirm').value = '';
-    await loadSettings();
   }
 }
 
@@ -3706,7 +3817,7 @@ async function simpanAgenda() {
     showToast('Lengkapi judul, tanggal, dan waktu!');
     return;
   }
-  const { error } = await supabase.from('agenda').insert([{ jenis, judul, tanggal, waktu, keterangan }]);
+  const { error } = await supabase.from('agenda').insert([{ rt_id: currentRtId, jenis, judul, tanggal, waktu, keterangan }]);
   if (error) {
     showToast('Gagal menyimpan agenda: ' + error.message);
   } else {
@@ -3732,6 +3843,7 @@ async function hapusAgenda(id) {
 async function loadPublicAgendaDanRonda() {
   const { data, error } = await supabase.from('agenda')
     .select('*')
+    .eq('rt_id', currentRtId)
     .gte('tanggal', new Date().toISOString().split('T')[0])
     .order('tanggal', { ascending: true })
     .limit(5);
@@ -3787,7 +3899,7 @@ async function simpanPolling() {
     showToast('Tulis minimal 2 opsi jawaban!');
     return;
   }
-  const { error } = await supabase.from('polling').insert([{ pertanyaan, opsi_jawaban, status: 'aktif' }]);
+  const { error } = await supabase.from('polling').insert([{ rt_id: currentRtId, pertanyaan, opsi_jawaban, status: 'aktif' }]);
   if (error) {
     showToast('Gagal membuat polling: ' + error.message);
   } else {
@@ -3990,7 +4102,7 @@ async function kirimVote(pollingId) {
     await loadPublicPolling();
     return;
   }
-  const { error } = await supabase.from('polling_vote').insert([{ polling_id: pollingId, pilihan, pemilih_id: pemilihId }]);
+  const { error } = await supabase.from('polling_vote').insert([{ rt_id: currentRtId, polling_id: pollingId, pilihan, pemilih_id: pemilihId }]);
   if (error) {
     showToast('Gagal mengirim pilihan: ' + error.message);
   } else {
@@ -4335,12 +4447,7 @@ async function initVisitorCounter() {
       }
       
       const statsJsonStr = JSON.stringify(stats);
-      const { data: checkData } = await supabase.from('setelan').select('id').eq('kunci', 'visitor_stats');
-      if (checkData && checkData.length > 0) {
-        await supabase.from('setelan').update({ nilai: statsJsonStr }).eq('kunci', 'visitor_stats');
-      } else {
-        await supabase.from('setelan').insert([{ kunci: 'visitor_stats', nilai: statsJsonStr }]);
-      }
+      await supabase.from('setelan').upsert({ rt_id: currentRtId, kunci: 'visitor_stats', nilai: statsJsonStr });
     }
     
     document.querySelectorAll('.visit-daily').forEach(el => el.textContent = stats.daily || 0);
@@ -4369,23 +4476,10 @@ async function loadGaleriFromSettings() {
 
 async function saveGaleriToSettings() {
   const jsonStr = JSON.stringify(allGaleri);
-  const { data, error: fetchErr } = await supabase.from('setelan').select('id').eq('kunci', 'galeri_albums');
-  if (fetchErr) {
-    showToast('Gagal memeriksa setelan galeri: ' + fetchErr.message);
+  const { error } = await supabase.from('setelan').upsert({ rt_id: currentRtId, kunci: 'galeri_albums', nilai: jsonStr });
+  if (error) {
+    showToast('Gagal menyimpan galeri: ' + error.message);
     return false;
-  }
-  if (data && data.length > 0) {
-    const { error } = await supabase.from('setelan').update({ nilai: jsonStr }).eq('kunci', 'galeri_albums');
-    if (error) {
-      showToast('Gagal memperbarui galeri: ' + error.message);
-      return false;
-    }
-  } else {
-    const { error } = await supabase.from('setelan').insert([{ kunci: 'galeri_albums', nilai: jsonStr }]);
-    if (error) {
-      showToast('Gagal menambahkan setelan galeri: ' + error.message);
-      return false;
-    }
   }
   return true;
 }
@@ -4564,6 +4658,7 @@ async function loadInventaris() {
     const { data, error } = await supabase
       .from('inventaris')
       .select('*')
+      .eq('rt_id', currentRtId)
       .order('nama_barang', { ascending: true });
     if (error) throw error;
     allInventaris = data || [];
@@ -4578,6 +4673,7 @@ async function loadPinjamData() {
     const { data, error } = await supabase
       .from('inventaris_pinjam')
       .select('*, inventaris(*)')
+      .eq('rt_id', currentRtId)
       .order('created_at', { ascending: false });
     if (error) throw error;
     allPinjam = data || [];
@@ -4996,7 +5092,11 @@ async function prosesStatusPinjam(pinjamId, tindakan) {
   }
 }
 
-loadPublicData();
+async function startApp() {
+  await initTenant();
+  await loadPublicData();
+}
+startApp();
 </script>
 
 <!-- PRINT AREA FOR PRINT-READY LETTERS -->
