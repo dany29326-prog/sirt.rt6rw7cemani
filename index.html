@@ -1487,6 +1487,7 @@ td { padding:14px 16px; font-size:13px; border-bottom:1px solid var(--border); c
       <button class="pub-sidebar-link" onclick="showPubPage('pengurus')">👑 Pengurus RT</button>
       <button class="pub-sidebar-link" onclick="showPubPage('galeri')">📸 Galeri Kegiatan</button>
       <button class="pub-sidebar-link" onclick="showPubPage('inventaris')">📦 Inventaris RT</button>
+      <button class="pub-sidebar-link" onclick="showPubPage('pkk')">👩‍👧‍👦 PKK Ibu-Ibu</button>
       <div style="margin-top: auto; padding-top: 20px; border-top: 1px solid var(--border); display: flex; flex-direction: column; gap: 12px;">
         <button class="admin-login-btn-sidebar" onclick="openLoginModal(); togglePublicSidebar();" style="width: 100%;">🔐 Admin Panel</button>
         <div class="visitor-counter" style="padding: 12px; background: rgba(255, 255, 255, 0.65); border: 1px solid var(--border); border-radius: 12px; font-size: 11px; color: var(--text-light);">
@@ -1543,6 +1544,9 @@ td { padding:14px 16px; font-size:13px; border-bottom:1px solid var(--border); c
         </button>
         <button class="pub-sidebar-item" onclick="showPubPage('inventaris', this)">
           <span class="pub-sidebar-icon">📦</span> Inventaris RT
+        </button>
+        <button class="pub-sidebar-item" onclick="showPubPage('pkk', this)">
+          <span class="pub-sidebar-icon">👩‍👧‍👦</span> PKK Ibu-Ibu
         </button>
       </nav>
       <div class="pub-sidebar-footer" style="padding: 16px; border-top: 1px solid var(--border); display: flex; flex-direction: column; gap: 12px;">
@@ -1814,6 +1818,80 @@ td { padding:14px 16px; font-size:13px; border-bottom:1px solid var(--border); c
     </div>
   </div>
 
+  <!-- PUBLIC PAGE: PKK IBU-IBU -->
+  <div class="pub-page" id="pub-pkk">
+    <div class="pub-content">
+      <button class="back-to-home-btn" onclick="showPubPage('beranda')">← Kembali ke Beranda</button>
+      <div class="sec-title">👩‍👧‍👦 Kegiatan PKK Ibu-Ibu</div>
+      <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 24px; margin-top: 6px;">
+        Informasi kegiatan pemberdayaan kesejahteraan keluarga (PKK), kas keuangan, dan kepengurusan PKK di lingkungan <span class="dynamic-rt-name">RT 06 Cemani</span>.
+      </p>
+
+      <!-- PKK Summary Cards -->
+      <div class="kas-header-cards" style="grid-template-columns: 1fr; margin-bottom: 24px;">
+        <div class="kas-card main" style="background: linear-gradient(135deg, #7c3aed 0%, #5b21b6 100%); box-shadow: 0 12px 30px -10px rgba(124, 58, 237, 0.3); border: none;">
+          <div style="font-size: 12px; opacity: 0.8; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 700;">Total Saldo Kas PKK</div>
+          <div class="kas-amount white" id="pub-pkk-saldo">Rp 0</div>
+        </div>
+      </div>
+
+      <!-- PKK Tabs -->
+      <div class="admin-tab-container" style="margin-bottom: 20px; border-bottom: 1px solid var(--border);">
+        <button class="admin-tab-btn active" id="pub-tab-btn-pkk-agenda" onclick="switchPubPkkTab('agenda')">📅 Agenda PKK</button>
+        <button class="admin-tab-btn" id="pub-tab-btn-pkk-pengurus" onclick="switchPubPkkTab('pengurus')">👥 Pengurus PKK</button>
+        <button class="admin-tab-btn" id="pub-tab-btn-pkk-kas" onclick="switchPubPkkTab('kas')">🏦 Riwayat Kas</button>
+      </div>
+
+      <!-- Tab Content 1: Agenda PKK -->
+      <div class="pub-pkk-tab-content active" id="pub-pkk-tab-agenda">
+        <div class="card">
+          <div class="table-responsive">
+            <table>
+              <thead>
+                <tr>
+                  <th>Tanggal & Waktu</th>
+                  <th>Nama Kegiatan</th>
+                  <th>Keterangan</th>
+                </tr>
+              </thead>
+              <tbody id="pub-pkk-agenda-table-body">
+                <tr><td colspan="3">Memuat agenda PKK...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tab Content 2: Pengurus PKK -->
+      <div class="pub-pkk-tab-content" id="pub-pkk-tab-pengurus">
+        <div id="pub-pkk-pengurus-list" class="warga-pub-grid">
+          Memuat daftar pengurus PKK...
+        </div>
+      </div>
+
+      <!-- Tab Content 3: Riwayat Kas PKK -->
+      <div class="pub-pkk-tab-content" id="pub-pkk-tab-kas">
+        <div class="card">
+          <div class="table-responsive">
+            <table>
+              <thead>
+                <tr>
+                  <th>Tanggal</th>
+                  <th>Keterangan</th>
+                  <th>Jenis</th>
+                  <th>Jumlah</th>
+                </tr>
+              </thead>
+              <tbody id="pub-pkk-kas-table-body">
+                <tr><td colspan="4">Memuat riwayat kas PKK...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
     </div> <!-- Close pub-main-content -->
   </div> <!-- Close pub-desktop-wrapper -->
 
@@ -1881,6 +1959,13 @@ td { padding:14px 16px; font-size:13px; border-bottom:1px solid var(--border); c
         <div>
           <div class="pub-sheet-btn-title">Inventaris & Pinjam Aset</div>
           <div class="pub-sheet-btn-desc">Lihat ketersediaan barang dan ajukan pinjam online</div>
+        </div>
+      </button>
+      <button class="pub-sheet-btn" onclick="handleSheetAction('pkk')">
+        <span class="pub-sheet-btn-icon">👩‍👧‍👦</span>
+        <div>
+          <div class="pub-sheet-btn-title">Kegiatan PKK Ibu-Ibu</div>
+          <div class="pub-sheet-btn-desc">Informasi kegiatan, kas keuangan, dan pengurus PKK RT</div>
         </div>
       </button>
       <button class="pub-sheet-btn" onclick="handleSheetAction('wa')">
@@ -1987,6 +2072,7 @@ td { padding:14px 16px; font-size:13px; border-bottom:1px solid var(--border); c
       <div class="nav-item" onclick="showAdminPage('surat',this)"><span class="nav-icon">📋</span>Surat</div>
       <div class="nav-item" onclick="showAdminPage('galeri',this)"><span class="nav-icon">📸</span>Kelola Galeri</div>
       <div class="nav-item" onclick="showAdminPage('inventaris',this)"><span class="nav-icon">📦</span>Kelola Inventaris</div>
+      <div class="nav-item" onclick="showAdminPage('pkk',this)"><span class="nav-icon">👩‍👧‍👦</span>Kegiatan PKK</div>
       <div class="nav-item" onclick="showAdminPage('setelan',this)"><span class="nav-icon">⚙️</span>Pengaturan</div>
     </nav>
     <div class="sidebar-footer"><div class="user-card"><div class="user-av">AD</div><div><div class="user-name">Admin RT</div><div class="user-role">Pengurus <span class="dynamic-rt-name">RT 06 Cemani</span></div></div><button class="logout-btn" onclick="doAdminLogout()">⎋</button></div></div>
@@ -2346,6 +2432,98 @@ td { padding:14px 16px; font-size:13px; border-bottom:1px solid var(--border); c
         </div>
       </div>
 
+      <!-- ADMIN PAGE: PKK IBU-IBU -->
+      <div class="a-page" id="a-pkk">
+        <div class="page-header">
+          <div>
+            <h2>Kegiatan PKK Ibu-Ibu</h2>
+            <p>Pengelolaan susunan pengurus, buku kas, dan agenda kegiatan PKK RT</p>
+          </div>
+          <div class="page-header-actions" id="pkk-header-actions">
+            <!-- Dynamic button depending on active tab -->
+          </div>
+        </div>
+
+        <div class="kas-header-cards" style="grid-template-columns: 1fr; margin-bottom: 24px;">
+          <div class="kas-card main" style="background: linear-gradient(135deg, #7c3aed 0%, #5b21b6 100%); box-shadow: 0 12px 30px -10px rgba(124, 58, 237, 0.3); border: none;">
+            <div style="font-size: 12px; opacity: 0.8; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 700;">Total Saldo Kas PKK</div>
+            <div class="kas-amount white" id="admin-pkk-saldo">Rp 0</div>
+          </div>
+        </div>
+
+        <div class="admin-tab-container" style="border-bottom: 1px solid var(--border); margin-bottom: 20px;">
+          <button class="admin-tab-btn active" id="tab-btn-pkk-pengurus" onclick="switchPkkTab('pengurus')">👥 Susunan Pengurus</button>
+          <button class="admin-tab-btn" id="tab-btn-pkk-kas" onclick="switchPkkTab('kas')">🏦 Buku Kas PKK</button>
+          <button class="admin-tab-btn" id="tab-btn-pkk-agenda" onclick="switchPkkTab('agenda')">📅 Agenda PKK</button>
+        </div>
+
+        <!-- Tab 1: Pengurus PKK -->
+        <div class="admin-tab-content active" id="tab-content-pkk-pengurus">
+          <div class="card">
+            <div class="table-responsive">
+              <table>
+                <thead>
+                  <tr>
+                    <th style="width: 100px;">Urutan</th>
+                    <th>Nama Pengurus</th>
+                    <th>Jabatan</th>
+                    <th>No WhatsApp</th>
+                    <th>Alamat Domisili</th>
+                    <th>Aksi</th>
+                  </tr>
+                </thead>
+                <tbody id="pkk-pengurus-table-body">
+                  <tr><td colspan="6">Memuat data pengurus PKK...</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tab 2: Kas PKK -->
+        <div class="admin-tab-content" id="tab-content-pkk-kas">
+          <div class="card">
+            <div class="table-responsive">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Tanggal</th>
+                    <th>Keterangan</th>
+                    <th>Jenis</th>
+                    <th>Jumlah</th>
+                    <th>Aksi</th>
+                  </tr>
+                </thead>
+                <tbody id="pkk-kas-table-body">
+                  <tr><td colspan="5">Memuat buku kas PKK...</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tab 3: Agenda PKK -->
+        <div class="admin-tab-content" id="tab-content-pkk-agenda">
+          <div class="card">
+            <div class="table-responsive">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Tanggal & Waktu</th>
+                    <th>Kegiatan / Agenda</th>
+                    <th>Keterangan</th>
+                    <th>Aksi</th>
+                  </tr>
+                </thead>
+                <tbody id="pkk-agenda-table-body">
+                  <tr><td colspan="4">Memuat agenda PKK...</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
       <div class="a-page" id="a-setelan">
         <div class="page-header">
           <div>
@@ -2413,6 +2591,7 @@ td { padding:14px 16px; font-size:13px; border-bottom:1px solid var(--border); c
         <select id="agenda-jenis" style="width:100%" onchange="toggleAgendaFormFields()">
           <option value="kegiatan">Kegiatan (Rapat, Kerja Bakti, dll.)</option>
           <option value="ronda">Jadwal Ronda Malam</option>
+          <option value="pkk">Kegiatan PKK Ibu-Ibu</option>
         </select>
       </div>
       <div>
@@ -2437,6 +2616,72 @@ td { padding:14px 16px; font-size:13px; border-bottom:1px solid var(--border); c
     <div class="modal-actions">
       <button class="btn-cancel" onclick="closeAgendaModal()">Batal</button>
       <button class="btn-save" onclick="simpanAgenda()">Simpan</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL TAMBAH/EDIT PENGURUS PKK -->
+<div class="add-modal-overlay" id="pkk-pengurus-modal">
+  <div class="add-modal">
+    <div class="add-modal-title" id="pkk-pengurus-modal-title">➕ Tambah Pengurus PKK</div>
+    <input type="hidden" id="pkk-pengurus-id">
+    <div class="modal-grid" style="grid-template-columns: 1fr;">
+      <div>
+        <label class="form-label" style="font-weight:600;margin-bottom:4px;display:block;">Nama Pengurus</label>
+        <input id="pkk-pengurus-nama" placeholder="Contoh: Ibu Siti Aminah" style="width:100%; padding:11px 14px; border:1.5px solid var(--border); border-radius:10px; font-family:inherit; font-size:13px; outline:none;">
+      </div>
+      <div>
+        <label class="form-label" style="font-weight:600;margin-bottom:4px;display:block;">Jabatan / Seksi</label>
+        <input id="pkk-pengurus-jabatan" placeholder="Contoh: Ketua PKK / Ketua Pokja I" style="width:100%; padding:11px 14px; border:1.5px solid var(--border); border-radius:10px; font-family:inherit; font-size:13px; outline:none;">
+      </div>
+      <div>
+        <label class="form-label" style="font-weight:600;margin-bottom:4px;display:block;">No WhatsApp (Opsional)</label>
+        <input id="pkk-pengurus-wa" placeholder="Contoh: 08123456789" style="width:100%; padding:11px 14px; border:1.5px solid var(--border); border-radius:10px; font-family:inherit; font-size:13px; outline:none;">
+      </div>
+      <div>
+        <label class="form-label" style="font-weight:600;margin-bottom:4px;display:block;">Alamat Domisili (Opsional)</label>
+        <input id="pkk-pengurus-alamat" placeholder="Contoh: RT 06 RW 17" style="width:100%; padding:11px 14px; border:1.5px solid var(--border); border-radius:10px; font-family:inherit; font-size:13px; outline:none;">
+      </div>
+      <div>
+        <label class="form-label" style="font-weight:600;margin-bottom:4px;display:block;">Urutan Tampilan</label>
+        <input type="number" id="pkk-pengurus-urutan" value="1" placeholder="Contoh: 1" style="width:100%; padding:11px 14px; border:1.5px solid var(--border); border-radius:10px; font-family:inherit; font-size:13px; outline:none;">
+      </div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="closePkkPengurusModal()">Batal</button>
+      <button class="btn-save" onclick="simpanPkkPengurus()">Simpan</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL CATAT KAS PKK -->
+<div class="add-modal-overlay" id="pkk-kas-modal">
+  <div class="add-modal">
+    <div class="add-modal-title">💰 Transaksi Kas PKK</div>
+    <div class="modal-grid" style="grid-template-columns: 1fr;">
+      <div>
+        <label class="form-label" style="font-weight:600;margin-bottom:4px;display:block;">Tanggal Transaksi</label>
+        <input type="date" id="pkk-kas-tanggal" style="width:100%; padding:11px 14px; border:1.5px solid var(--border); border-radius:10px; font-family:inherit; font-size:13px; outline:none;">
+      </div>
+      <div>
+        <label class="form-label" style="font-weight:600;margin-bottom:4px;display:block;">Keterangan</label>
+        <input id="pkk-kas-keterangan" placeholder="Contoh: Arisan Ibu-Ibu Mei" style="width:100%; padding:11px 14px; border:1.5px solid var(--border); border-radius:10px; font-family:inherit; font-size:13px; outline:none;">
+      </div>
+      <div>
+        <label class="form-label" style="font-weight:600;margin-bottom:4px;display:block;">Jenis Transaksi</label>
+        <select id="pkk-kas-jenis" style="width:100%; padding:11px 14px; border:1.5px solid var(--border); border-radius:10px; font-family:inherit; font-size:13px; outline:none;">
+          <option value="masuk">Pemasukan (Uang Masuk)</option>
+          <option value="keluar">Pengeluaran (Uang Keluar)</option>
+        </select>
+      </div>
+      <div>
+        <label class="form-label" style="font-weight:600;margin-bottom:4px;display:block;">Jumlah (Rp)</label>
+        <input type="number" id="pkk-kas-jumlah" placeholder="Contoh: 50000" style="width:100%; padding:11px 14px; border:1.5px solid var(--border); border-radius:10px; font-family:inherit; font-size:13px; outline:none;">
+      </div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="closePkkKasModal()">Batal</button>
+      <button class="btn-save" onclick="simpanPkkKas()">Simpan</button>
     </div>
   </div>
 </div>
@@ -2951,7 +3196,7 @@ async function loadSettings() {
 }
 
 async function loadAgenda() {
-  const { data, error } = await supabase.from('agenda').select('*').eq('rt_id', currentRtId).order('tanggal', { ascending: true });
+  const { data, error } = await supabase.from('agenda').select('*').eq('rt_id', currentRtId).neq('jenis', 'pkk').order('tanggal', { ascending: true });
   if (error) return [];
   allAgenda = data;
   filteredAgenda = [...allAgenda];
@@ -3411,13 +3656,14 @@ function showAdminPage(name,el){
   }
   document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active')); 
   if (el) el.classList.add('active'); 
-  const titles={dashboard:'Dashboard',warga:'Data Warga',pengurus_rt:'Pengurus RT',iuran:'Iuran Bulanan',kas:'Kas RT',pengumuman:'Pengumuman',agenda:'Agenda & Ronda',polling:'Polling Warga',surat:'Surat',galeri:'Kelola Galeri Kegiatan',inventaris:'Kelola Inventaris & Aset RT',setelan:'Pengaturan'}; 
+  const titles={dashboard:'Dashboard',warga:'Data Warga',pengurus_rt:'Pengurus RT',iuran:'Iuran Bulanan',kas:'Kas RT',pengumuman:'Pengumuman',agenda:'Agenda & Ronda',polling:'Polling Warga',surat:'Surat',galeri:'Kelola Galeri Kegiatan',inventaris:'Kelola Inventaris & Aset RT',pkk:'Kegiatan PKK',setelan:'Pengaturan'}; 
   document.getElementById('admin-title').textContent=titles[name] || 'Admin'; 
   if (name === 'setelan') populateSettingsInputs();
   if (name === 'pengurus_rt') renderPengurusTable();
   if (name === 'surat') renderSuratTable();
   if (name === 'galeri') renderAdminGaleri();
   if (name === 'inventaris') renderAdminInventaris();
+  if (name === 'pkk') initAdminPkk();
 
   // Close mobile sidebar if open
   const sidebar = document.querySelector('.sidebar');
@@ -3501,6 +3747,7 @@ function showPubPage(name){
   if (name === 'pengurus') renderPublicPengurus();
   if (name === 'galeri') renderPublicGaleri();
   if (name === 'inventaris') renderPublicInventaris();
+  if (name === 'pkk') renderPublicPkk();
   
   // Close mobile sidebar if open
   const sidebar = document.getElementById('pub-sidebar');
@@ -3906,6 +4153,11 @@ function toggleAgendaFormFields() {
     inputJudul.placeholder = 'Contoh: Regu Ronda RT 06 (Kelompok A)';
     labelKet.textContent = 'Anggota Ronda (Nama-Nama)';
     textareaKet.placeholder = 'Contoh: Joko, Roni, Ahmad, Dwi';
+  } else if (jenis === 'pkk') {
+    labelJudul.textContent = 'Nama Kegiatan PKK';
+    inputJudul.placeholder = 'Contoh: Pertemuan Rutin & Arisan PKK';
+    labelKet.textContent = 'Keterangan Kegiatan';
+    textareaKet.placeholder = 'Contoh: Pembahasan program Pokja II & kocok arisan bulanan...';
   } else {
     labelJudul.textContent = 'Judul Kegiatan';
     inputJudul.placeholder = 'Contoh: Kerja Bakti Bulanan';
@@ -3972,10 +4224,14 @@ async function simpanAgenda() {
   if (error) {
     showToast('Gagal menyimpan agenda: ' + error.message);
   } else {
-    showToast('Agenda/Ronda berhasil ditambahkan!');
+    showToast('Agenda berhasil disimpan!');
     closeAgendaModal();
-    await renderAgendaTable();
-    await loadPublicAgendaDanRonda();
+    if (jenis === 'pkk') {
+      await renderPkkAgendaTable();
+    } else {
+      await renderAgendaTable();
+      await loadPublicAgendaDanRonda();
+    }
   }
 }
 
@@ -3995,6 +4251,7 @@ async function loadPublicAgendaDanRonda() {
   const { data, error } = await supabase.from('agenda')
     .select('*')
     .eq('rt_id', currentRtId)
+    .neq('jenis', 'pkk')
     .gte('tanggal', new Date().toISOString().split('T')[0])
     .order('tanggal', { ascending: true })
     .limit(5);
@@ -5240,6 +5497,447 @@ async function prosesStatusPinjam(pinjamId, tindakan) {
     
   } catch (err) {
     showToast('Terjadi kesalahan: ' + err.message);
+  }
+}
+
+// ==================== PKK BUSINESS LOGIC ====================
+let allPkkPengurus = [];
+let allPkkKas = [];
+let allPkkAgenda = [];
+let activePkkTab = 'pengurus'; // 'pengurus', 'kas', 'agenda'
+let activePubPkkTab = 'agenda'; // 'agenda', 'pengurus', 'kas'
+
+async function initAdminPkk() {
+  activePkkTab = 'pengurus';
+  switchPkkTab(activePkkTab);
+}
+
+async function switchPkkTab(tab) {
+  activePkkTab = tab;
+  document.querySelectorAll('#a-pkk .admin-tab-btn').forEach(btn => btn.classList.remove('active'));
+  document.querySelectorAll('#a-pkk .admin-tab-content').forEach(content => content.classList.remove('active'));
+  
+  const activeBtn = document.getElementById('tab-btn-pkk-' + tab);
+  const activeContent = document.getElementById('tab-content-pkk-' + tab);
+  if (activeBtn) activeBtn.classList.add('active');
+  if (activeContent) activeContent.classList.add('active');
+  
+  // Render header actions button dynamically based on active tab
+  const headerActions = document.getElementById('pkk-header-actions');
+  if (headerActions) {
+    if (tab === 'pengurus') {
+      headerActions.innerHTML = `<button class="btn-add" onclick="openTambahPkkPengurusModal()">＋ Tambah Pengurus PKK</button>`;
+    } else if (tab === 'kas') {
+      headerActions.innerHTML = `<button class="btn-add" onclick="openTambahPkkKasModal()">＋ Catat Transaksi PKK</button>`;
+    } else if (tab === 'agenda') {
+      headerActions.innerHTML = `<button class="btn-add" onclick="openTambahPkkAgendaModal()">＋ Tambah Agenda PKK</button>`;
+    }
+  }
+  
+  if (tab === 'pengurus') await renderPkkPengurusTable();
+  if (tab === 'kas') await renderPkkKasTable();
+  if (tab === 'agenda') await renderPkkAgendaTable();
+}
+
+// 1. PENGURUS PKK FUNCTIONS
+async function loadPkkPengurus() {
+  const { data, error } = await supabase
+    .from('pkk_pengurus')
+    .select('*')
+    .eq('rt_id', currentRtId)
+    .order('urutan', { ascending: true });
+  if (error) {
+    console.error('Error loading PKK pengurus:', error);
+    return [];
+  }
+  allPkkPengurus = data;
+  return data;
+}
+
+async function renderPkkPengurusTable() {
+  const tbody = document.getElementById('pkk-pengurus-table-body');
+  if (!tbody) return;
+  tbody.innerHTML = '<tr><td colspan="6">Memuat data...</td></tr>';
+  
+  await loadPkkPengurus();
+  
+  if (allPkkPengurus.length === 0) {
+    tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;">Belum ada data pengurus PKK.</td></tr>';
+    return;
+  }
+  
+  tbody.innerHTML = allPkkPengurus.map(p => `
+    <tr>
+      <td>${p.urutan}</td>
+      <td style="font-weight:700;">${escapeHtml(p.nama)}</td>
+      <td><span class="status-pill paid" style="background:#f3e8ff; color:#6b21a8;">${escapeHtml(p.jabatan)}</span></td>
+      <td>${p.whatsapp ? `<a class="wa-btn" href="https://wa.me/${p.whatsapp.replace(/\D/g,'')}" target="_blank">💬 ${escapeHtml(p.whatsapp)}</a>` : '-'}</td>
+      <td>${escapeHtml(p.alamat || '-')}</td>
+      <td>
+        <div style="display:flex; gap:6px;">
+          <button class="icon-btn" onclick="openEditPkkPengurus(${JSON.stringify(p).replace(/"/g, '&quot;')})" title="Edit">✏️</button>
+          <button class="icon-btn danger" onclick="hapusPkkPengurus('${p.id}')" title="Hapus">🗑️</button>
+        </div>
+      </td>
+    </tr>
+  `).join('');
+}
+
+function openTambahPkkPengurusModal() {
+  document.getElementById('pkk-pengurus-modal-title').textContent = '➕ Tambah Pengurus PKK';
+  document.getElementById('pkk-pengurus-id').value = '';
+  document.getElementById('pkk-pengurus-nama').value = '';
+  document.getElementById('pkk-pengurus-jabatan').value = '';
+  document.getElementById('pkk-pengurus-wa').value = '';
+  document.getElementById('pkk-pengurus-alamat').value = '';
+  document.getElementById('pkk-pengurus-urutan').value = '1';
+  document.getElementById('pkk-pengurus-modal').classList.add('open');
+}
+
+function openEditPkkPengurus(p) {
+  document.getElementById('pkk-pengurus-modal-title').textContent = '✏️ Edit Pengurus PKK';
+  document.getElementById('pkk-pengurus-id').value = p.id;
+  document.getElementById('pkk-pengurus-nama').value = p.nama;
+  document.getElementById('pkk-pengurus-jabatan').value = p.jabatan;
+  document.getElementById('pkk-pengurus-wa').value = p.whatsapp || '';
+  document.getElementById('pkk-pengurus-alamat').value = p.alamat || '';
+  document.getElementById('pkk-pengurus-urutan').value = p.urutan || '1';
+  document.getElementById('pkk-pengurus-modal').classList.add('open');
+}
+
+function closePkkPengurusModal() {
+  document.getElementById('pkk-pengurus-modal').classList.remove('open');
+}
+
+async function simpanPkkPengurus() {
+  const id = document.getElementById('pkk-pengurus-id').value;
+  const nama = document.getElementById('pkk-pengurus-nama').value.trim();
+  const jabatan = document.getElementById('pkk-pengurus-jabatan').value.trim();
+  const whatsapp = document.getElementById('pkk-pengurus-wa').value.trim();
+  const alamat = document.getElementById('pkk-pengurus-alamat').value.trim();
+  const urutan = parseInt(document.getElementById('pkk-pengurus-urutan').value) || 1;
+  
+  if (!nama || !jabatan) {
+    showToast('Nama dan Jabatan harus diisi!');
+    return;
+  }
+  
+  const payload = {
+    rt_id: currentRtId,
+    nama,
+    jabatan,
+    whatsapp,
+    alamat,
+    urutan
+  };
+  
+  try {
+    if (id) {
+      const { error } = await supabase.from('pkk_pengurus').update(payload).eq('id', id);
+      if (error) throw error;
+      showToast('Pengurus PKK diperbarui!');
+    } else {
+      const { error } = await supabase.from('pkk_pengurus').insert([payload]);
+      if (error) throw error;
+      showToast('Pengurus PKK ditambahkan!');
+    }
+    closePkkPengurusModal();
+    await renderPkkPengurusTable();
+  } catch (err) {
+    showToast('Gagal menyimpan: ' + err.message);
+  }
+}
+
+async function hapusPkkPengurus(id) {
+  if (!confirm('Yakin ingin menghapus pengurus PKK ini?')) return;
+  try {
+    const { error } = await supabase.from('pkk_pengurus').delete().eq('id', id);
+    if (error) throw error;
+    showToast('Pengurus PKK dihapus!');
+    await renderPkkPengurusTable();
+  } catch (err) {
+    showToast('Gagal menghapus: ' + err.message);
+  }
+}
+
+// 2. KAS PKK FUNCTIONS
+async function loadPkkKas() {
+  const { data, error } = await supabase
+    .from('pkk_kas')
+    .select('*')
+    .eq('rt_id', currentRtId)
+    .order('tanggal', { ascending: false });
+  if (error) {
+    console.error('Error loading PKK kas:', error);
+    return [];
+  }
+  allPkkKas = data;
+  return data;
+}
+
+async function renderPkkKasTable() {
+  const tbody = document.getElementById('pkk-kas-table-body');
+  const saldoElAdmin = document.getElementById('admin-pkk-saldo');
+  const saldoElPub = document.getElementById('pub-pkk-saldo');
+  if (!tbody) return;
+  tbody.innerHTML = '<tr><td colspan="5">Memuat data...</td></tr>';
+  
+  await loadPkkKas();
+  
+  // Hitung total saldo
+  let saldo = 0;
+  allPkkKas.forEach(k => {
+    if (k.jenis === 'masuk') saldo += parseFloat(k.jumlah);
+    else saldo -= parseFloat(k.jumlah);
+  });
+  
+  const formattedSaldo = formatRupiah(saldo);
+  if (saldoElAdmin) saldoElAdmin.textContent = formattedSaldo;
+  if (saldoElPub) saldoElPub.textContent = formattedSaldo;
+  
+  if (allPkkKas.length === 0) {
+    tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;">Belum ada riwayat transaksi kas PKK.</td></tr>';
+    return;
+  }
+  
+  tbody.innerHTML = allPkkKas.map(k => `
+    <tr>
+      <td>${formatDate(k.tanggal)}</td>
+      <td style="font-weight:600;">${escapeHtml(k.keterangan)}</td>
+      <td>
+        <span class="trans-type ${k.jenis === 'masuk' ? 'in' : 'out'}">
+          ${k.jenis === 'masuk' ? 'MASUK' : 'KELUAR'}
+        </span>
+      </td>
+      <td style="font-weight:700; font-family:'DM Mono',monospace; color:${k.jenis === 'masuk' ? 'var(--green)' : 'var(--danger)'}">
+        ${k.jenis === 'masuk' ? '+' : '-'} ${formatRupiah(k.jumlah)}
+      </td>
+      <td>
+        <button class="icon-btn danger" onclick="hapusPkkKas('${k.id}')" title="Hapus">🗑️</button>
+      </td>
+    </tr>
+  `).join('');
+}
+
+function openTambahPkkKasModal() {
+  document.getElementById('pkk-kas-tanggal').value = new Date().toISOString().split('T')[0];
+  document.getElementById('pkk-kas-keterangan').value = '';
+  document.getElementById('pkk-kas-jenis').value = 'masuk';
+  document.getElementById('pkk-kas-jumlah').value = '';
+  document.getElementById('pkk-kas-modal').classList.add('open');
+}
+
+function closePkkKasModal() {
+  document.getElementById('pkk-kas-modal').classList.remove('open');
+}
+
+async function simpanPkkKas() {
+  const tanggal = document.getElementById('pkk-kas-tanggal').value;
+  const keterangan = document.getElementById('pkk-kas-keterangan').value.trim();
+  const jenis = document.getElementById('pkk-kas-jenis').value;
+  const jumlah = parseFloat(document.getElementById('pkk-kas-jumlah').value);
+  
+  if (!tanggal || !keterangan || isNaN(jumlah) || jumlah <= 0) {
+    showToast('Lengkapi semua data transaksi dengan benar!');
+    return;
+  }
+  
+  const payload = {
+    rt_id: currentRtId,
+    tanggal,
+    keterangan,
+    jenis,
+    jumlah
+  };
+  
+  try {
+    const { error } = await supabase.from('pkk_kas').insert([payload]);
+    if (error) throw error;
+    showToast('Transaksi kas PKK dicatat!');
+    closePkkKasModal();
+    await renderPkkKasTable();
+  } catch (err) {
+    showToast('Gagal mencatat transaksi: ' + err.message);
+  }
+}
+
+async function hapusPkkKas(id) {
+  if (!confirm('Yakin ingin menghapus transaksi kas ini?')) return;
+  try {
+    const { error } = await supabase.from('pkk_kas').delete().eq('id', id);
+    if (error) throw error;
+    showToast('Transaksi kas PKK dihapus!');
+    await renderPkkKasTable();
+  } catch (err) {
+    showToast('Gagal menghapus: ' + err.message);
+  }
+}
+
+// 3. AGENDA PKK FUNCTIONS
+async function loadPkkAgenda() {
+  const { data, error } = await supabase
+    .from('agenda')
+    .select('*')
+    .eq('rt_id', currentRtId)
+    .eq('jenis', 'pkk')
+    .order('tanggal', { ascending: true });
+  if (error) {
+    console.error('Error loading PKK agenda:', error);
+    return [];
+  }
+  allPkkAgenda = data;
+  return data;
+}
+
+async function renderPkkAgendaTable() {
+  const tbody = document.getElementById('pkk-agenda-table-body');
+  if (!tbody) return;
+  tbody.innerHTML = '<tr><td colspan="4">Memuat data...</td></tr>';
+  
+  await loadPkkAgenda();
+  
+  if (allPkkAgenda.length === 0) {
+    tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;">Belum ada agenda kegiatan PKK.</td></tr>';
+    return;
+  }
+  
+  tbody.innerHTML = allPkkAgenda.map(a => `
+    <tr>
+      <td style="font-weight:600;">
+        📅 ${formatDate(a.tanggal)}<br>
+        <span style="font-size:11px; color:var(--text-light); font-weight:normal;">⏰ ${escapeHtml(a.waktu || 'Selesai')}</span>
+      </td>
+      <td style="font-weight:700; color:var(--green-dark);">${escapeHtml(a.judul)}</td>
+      <td>${escapeHtml(a.keterangan || '-')}</td>
+      <td>
+        <button class="icon-btn danger" onclick="hapusPkkAgenda('${a.id}')" title="Hapus">🗑️</button>
+      </td>
+    </tr>
+  `).join('');
+}
+
+function openTambahPkkAgendaModal() {
+  document.getElementById('agenda-judul').value = '';
+  document.getElementById('agenda-waktu').value = '';
+  document.getElementById('agenda-keterangan').value = '';
+  document.getElementById('agenda-tanggal').value = new Date().toISOString().split('T')[0];
+  document.getElementById('agenda-jenis').value = 'pkk';
+  toggleAgendaFormFields();
+  document.getElementById('agenda-modal').classList.add('open');
+}
+
+async function hapusPkkAgenda(id) {
+  if (!confirm('Yakin ingin menghapus agenda PKK ini?')) return;
+  try {
+    const { error } = await supabase.from('agenda').delete().eq('id', id);
+    if (error) throw error;
+    showToast('Agenda PKK dihapus!');
+    await renderPkkAgendaTable();
+  } catch (err) {
+    showToast('Gagal menghapus: ' + err.message);
+  }
+}
+
+// 4. PUBLIC PORTAL PKK RENDERING
+async function renderPublicPkk() {
+  activePubPkkTab = 'agenda';
+  switchPubPkkTab(activePubPkkTab);
+  
+  // Calculate public PKK cash balance
+  await loadPkkKas();
+  let saldo = 0;
+  allPkkKas.forEach(k => {
+    if (k.jenis === 'masuk') saldo += parseFloat(k.jumlah);
+    else saldo -= parseFloat(k.jumlah);
+  });
+  const saldoElPub = document.getElementById('pub-pkk-saldo');
+  if (saldoElPub) saldoElPub.textContent = formatRupiah(saldo);
+}
+
+async function switchPubPkkTab(tab) {
+  activePubPkkTab = tab;
+  document.querySelectorAll('#pub-pkk .admin-tab-btn').forEach(btn => btn.classList.remove('active'));
+  document.querySelectorAll('#pub-pkk .pub-pkk-tab-content').forEach(content => content.classList.remove('active'));
+  
+  const activeBtn = document.getElementById('pub-tab-btn-pkk-' + tab);
+  const activeContent = document.getElementById('pub-pkk-tab-' + tab);
+  if (activeBtn) activeBtn.classList.add('active');
+  if (activeContent) activeContent.classList.add('active');
+  
+  if (tab === 'agenda') {
+    const tbody = document.getElementById('pub-pkk-agenda-table-body');
+    if (tbody) {
+      tbody.innerHTML = '<tr><td colspan="3">Memuat agenda...</td></tr>';
+      await loadPkkAgenda();
+      if (allPkkAgenda.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="3" style="text-align:center;">Belum ada agenda PKK terdekat.</td></tr>';
+      } else {
+        tbody.innerHTML = allPkkAgenda.map(a => `
+          <tr>
+            <td style="font-weight:600; white-space:nowrap;">
+              📅 ${formatDate(a.tanggal)}<br>
+              <span style="font-size:11px; color:var(--text-light); font-weight:normal;">⏰ ${escapeHtml(a.waktu || 'Selesai')}</span>
+            </td>
+            <td style="font-weight:700; color:var(--green-dark);">${escapeHtml(a.judul)}</td>
+            <td>${escapeHtml(a.keterangan || '-')}</td>
+          </tr>
+        `).join('');
+      }
+    }
+  }
+  
+  if (tab === 'pengurus') {
+    const listDiv = document.getElementById('pub-pkk-pengurus-list');
+    if (listDiv) {
+      listDiv.innerHTML = '<div style="text-align:center; grid-column:1/-1; padding:20px;">Memuat data...</div>';
+      await loadPkkPengurus();
+      if (allPkkPengurus.length === 0) {
+        listDiv.innerHTML = '<div style="text-align:center; grid-column:1/-1; padding:20px; color:var(--text-muted);">Belum ada data pengurus PKK.</div>';
+      } else {
+        listDiv.innerHTML = allPkkPengurus.map(p => `
+          <div class="warga-pub-card" style="border-left: 4px solid #7c3aed;">
+            <div class="warga-pub-info">
+              <div class="warga-pub-name">${escapeHtml(p.nama)}</div>
+              <div style="display:flex; gap:6px; margin:4px 0;">
+                <span class="status-pill" style="background:#f3e8ff; color:#6b21a8; font-size:10px; padding:2px 8px;">${escapeHtml(p.jabatan)}</span>
+              </div>
+              <div style="font-size:11px; color:var(--text-light); margin-top:4px;">📍 Domisili: ${escapeHtml(p.alamat || '-')}</div>
+            </div>
+            ${p.whatsapp ? `
+              <a class="warga-pub-wa" href="https://wa.me/${p.whatsapp.replace(/\D/g,'')}" target="_blank" title="Chat WhatsApp">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12.011 20.071c-2.417 0-4.786-.867-6.678-2.451L1.42 18.91l1.3-3.834a9.882 9.882 0 01-1.685-5.5C1.04 4.12 5.962.8 12.011.8c6.052 0 10.973 3.32 10.973 8.776 0 5.457-4.92 8.776-10.973 8.776zm0-17.771c-5.187 0-9.404 2.822-9.404 7.426 0 1.83.673 3.528 1.848 4.862L3.58 17.202l2.766-.82a9.429 9.429 0 005.665 1.942c5.187 0 9.404-2.821 9.404-7.425 0-4.604-4.217-7.426-9.404-7.426z"/></svg>
+              </a>
+            ` : ''}
+          </div>
+        `).join('');
+      }
+    }
+  }
+  
+  if (tab === 'kas') {
+    const tbody = document.getElementById('pub-pkk-kas-table-body');
+    if (tbody) {
+      tbody.innerHTML = '<tr><td colspan="4">Memuat data...</td></tr>';
+      await loadPkkKas();
+      if (allPkkKas.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;">Belum ada riwayat kas PKK.</td></tr>';
+      } else {
+        tbody.innerHTML = allPkkKas.map(k => `
+          <tr>
+            <td>${formatDate(k.tanggal)}</td>
+            <td style="font-weight:600;">${escapeHtml(k.keterangan)}</td>
+            <td>
+              <span class="trans-type ${k.jenis === 'masuk' ? 'in' : 'out'}">
+                ${k.jenis === 'masuk' ? 'MASUK' : 'KELUAR'}
+              </span>
+            </td>
+            <td style="font-weight:700; font-family:'DM Mono',monospace; color:${k.jenis === 'masuk' ? 'var(--green)' : 'var(--danger)'}">
+              ${k.jenis === 'masuk' ? '+' : '-'} ${formatRupiah(k.jumlah)}
+            </td>
+          </tr>
+        `).join('');
+      }
+    }
   }
 }
 
