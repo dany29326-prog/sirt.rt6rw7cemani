@@ -3596,8 +3596,8 @@ async function simpanSetelanParameter() {
     showToast('Lengkapi nominal iuran dan rekening');
     return;
   }
-  const { error: err1 } = await supabase.from('setelan').upsert({ rt_id: currentRtId, kunci: 'nominal_iuran', nilai: nominal.toString() });
-  const { error: err2 } = await supabase.from('setelan').upsert({ rt_id: currentRtId, kunci: 'rekening_pembayaran', nilai: rekening });
+  const { error: err1 } = await supabase.from('setelan').upsert({ rt_id: currentRtId, kunci: 'nominal_iuran', nilai: nominal.toString() }, { onConflict: 'rt_id,kunci' });
+  const { error: err2 } = await supabase.from('setelan').upsert({ rt_id: currentRtId, kunci: 'rekening_pembayaran', nilai: rekening }, { onConflict: 'rt_id,kunci' });
   if (err1 || err2) {
     showToast('Gagal menyimpan setelan: ' + (err1?.message || err2?.message));
   } else {
@@ -4598,7 +4598,7 @@ async function initVisitorCounter() {
       }
       
       const statsJsonStr = JSON.stringify(stats);
-      await supabase.from('setelan').upsert({ rt_id: currentRtId, kunci: 'visitor_stats', nilai: statsJsonStr });
+      await supabase.from('setelan').upsert({ rt_id: currentRtId, kunci: 'visitor_stats', nilai: statsJsonStr }, { onConflict: 'rt_id,kunci' });
     }
     
     document.querySelectorAll('.visit-daily').forEach(el => el.textContent = stats.daily || 0);
@@ -4627,7 +4627,7 @@ async function loadGaleriFromSettings() {
 
 async function saveGaleriToSettings() {
   const jsonStr = JSON.stringify(allGaleri);
-  const { error } = await supabase.from('setelan').upsert({ rt_id: currentRtId, kunci: 'galeri_albums', nilai: jsonStr });
+  const { error } = await supabase.from('setelan').upsert({ rt_id: currentRtId, kunci: 'galeri_albums', nilai: jsonStr }, { onConflict: 'rt_id,kunci' });
   if (error) {
     showToast('Gagal menyimpan galeri: ' + error.message);
     return false;
