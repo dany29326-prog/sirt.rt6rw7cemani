@@ -2578,7 +2578,39 @@ td { padding:14px 16px; font-size:13px; border-bottom:1px solid var(--border); c
 
 <!-- MODALS -->
 <div class="add-modal-overlay" id="add-modal"><div class="add-modal"><div class="add-modal-title">➕ Tambah Warga</div><div class="modal-grid"><input id="add-nama" placeholder="Nama Kepala"><input id="add-nik" placeholder="NIK"><input id="add-no-kk" placeholder="No KK"><input id="add-no-wa" placeholder="No WA"><input id="add-alamat" placeholder="Alamat"><input id="add-jumlah" type="number" placeholder="Jumlah Jiwa"><select id="add-status"><option value="aktif">Aktif</option><option value="pindah">Pindah</option></select></div><div class="modal-actions"><button class="btn-cancel" onclick="closeAddModal()">Batal</button><button class="btn-save" onclick="simpanWargaBaru()">Simpan</button></div></div></div>
-<div class="add-modal-overlay" id="bayar-modal"><div class="add-modal"><div class="add-modal-title">💰 Catat Pembayaran</div><select id="bayar-warga"></select><input type="month" id="bayar-bulan"><input type="number" id="bayar-jumlah" placeholder="Jumlah"><div class="modal-actions"><button class="btn-cancel" onclick="closeBayarModal()">Batal</button><button class="btn-save" onclick="simpanPembayaran()">Simpan</button></div></div></div>
+<div class="add-modal-overlay" id="bayar-modal">
+  <div class="add-modal">
+    <div class="add-modal-title">💰 Catat Pembayaran Iuran</div>
+    <div class="modal-grid" style="grid-template-columns: 1fr;">
+      <div>
+        <label class="form-label" style="font-weight:600;margin-bottom:4px;display:block;">Pilih Keluarga / KK</label>
+        <select id="bayar-warga" style="width:100%; padding:11px 14px; border:1.5px solid var(--border); border-radius:10px; font-family:inherit; font-size:13px; outline:none;"></select>
+      </div>
+      <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+        <div>
+          <label class="form-label" style="font-weight:600;margin-bottom:4px;display:block;">Mulai Bulan</label>
+          <input type="month" id="bayar-bulan" style="width:100%; padding:11px 14px; border:1.5px solid var(--border); border-radius:10px; font-family:inherit; font-size:13px; outline:none;">
+        </div>
+        <div>
+          <label class="form-label" style="font-weight:600;margin-bottom:4px;display:block;">Jumlah Bulan (Rapel)</label>
+          <input type="number" id="bayar-durasi" value="1" min="1" style="width:100%; padding:11px 14px; border:1.5px solid var(--border); border-radius:10px; font-family:inherit; font-size:13px; outline:none;">
+        </div>
+      </div>
+      <div>
+        <label class="form-label" style="font-weight:600;margin-bottom:4px;display:block;">Nominal per Bulan (Rp)</label>
+        <input type="number" id="bayar-jumlah" placeholder="Jumlah Nominal" style="width:100%; padding:11px 14px; border:1.5px solid var(--border); border-radius:10px; font-family:inherit; font-size:13px; outline:none;">
+      </div>
+      <div style="background: var(--surface2); padding: 12px; border-radius: 10px; border: 1px solid var(--border); margin-top: 4px;">
+        <span style="font-size: 11px; color: var(--text-light); text-transform: uppercase; font-weight: 700; letter-spacing: 0.5px;">Total Tagihan Pembayaran</span>
+        <div id="bayar-total-info" style="font-size: 20px; font-weight: 800; color: var(--green-dark); margin-top: 4px; font-family: 'DM Mono', monospace;">Rp 0</div>
+      </div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="closeBayarModal()">Batal</button>
+      <button class="btn-save" onclick="simpanPembayaran()">Simpan</button>
+    </div>
+  </div>
+</div>
 <div class="add-modal-overlay" id="kas-modal"><div class="add-modal"><div class="add-modal-title">💰 Transaksi Kas</div><input type="date" id="kas-tanggal"><input id="kas-keterangan" placeholder="Keterangan"><select id="kas-jenis"><option value="pemasukan">Pemasukan</option><option value="pengeluaran">Pengeluaran</option></select><input type="number" id="kas-jumlah" placeholder="Jumlah"><div class="modal-actions"><button class="btn-cancel" onclick="closeKasModal()">Batal</button><button class="btn-save" onclick="simpanTransaksiKas()">Simpan</button></div></div></div>
 <div class="add-modal-overlay" id="pengumuman-modal"><div class="add-modal"><div class="add-modal-title">📢 Buat Pengumuman</div><input id="pengumuman-judul" placeholder="Judul"><textarea id="pengumuman-isi" rows="3" placeholder="Isi pengumuman"></textarea><select id="pengumuman-kategori"><option value="info">Info</option><option value="penting">Penting</option><option value="kegiatan">Kegiatan</option></select><div class="modal-actions"><button class="btn-cancel" onclick="closePengumumanModal()">Batal</button><button class="btn-save" onclick="simpanPengumuman()">Publikasikan</button></div></div></div>
 
@@ -3312,7 +3344,7 @@ async function renderIuranTable() {
               annualTerkumpul += payment.nominal || iuranSebagian;
             }
             rowHtml += `<td>
-              <button class="matrix-status-btn ${badgeClass}" onclick="openCatatPembayaran('${w.id}', '${bulanStr}')" title="${m}/${currentIuranYear}: ${status.toUpperCase()}">${label}</button>
+              <button class="matrix-status-btn ${badgeClass}" onclick="quickHandleMatrixClick('${w.id}', '${bulanStr}', '${status}')" title="${m}/${currentIuranYear}: ${status.toUpperCase()}">${label}</button>
             </td>`;
           }
           rowHtml += '</tr>';
@@ -3334,14 +3366,62 @@ async function renderIuranTable() {
 function tagihWA(nama,wa) { if(!wa) { showToast('Nomor WA tidak tersedia'); return; } window.open(`https://wa.me/${wa.replace(/[^0-9]/g,'')}?text=Halo%20${encodeURIComponent(nama)}%2C%20tagihan%20iuran%20RT`,'_blank'); }
 
 async function simpanPembayaran() {
-  const wargaId = document.getElementById('bayar-warga')?.value, bulan = document.getElementById('bayar-bulan')?.value, jumlah = parseInt(document.getElementById('bayar-jumlah')?.value);
+  const wargaId = document.getElementById('bayar-warga')?.value, 
+        bulan = document.getElementById('bayar-bulan')?.value, 
+        jumlah = parseInt(document.getElementById('bayar-jumlah')?.value),
+        durasi = parseInt(document.getElementById('bayar-durasi')?.value) || 1;
+        
   if(!wargaId||!bulan) { showToast('Lengkapi data'); return; }
+  
   const iuranNominal = parseInt(appSettings['nominal_iuran']) || 100000;
   const status = jumlah>=iuranNominal?'lunas':(jumlah>0?'sebagian':'belum');
-  const existing = allIuran.find(i=>i.warga_id==wargaId&&i.bulan===bulan);
-  if(existing) await supabase.from('iuran').update({status, nominal:jumlah, tgl_bayar:new Date().toISOString().split('T')[0]}).eq('id',existing.id);
-  else await supabase.from('iuran').insert([{rt_id:currentRtId, warga_id:wargaId, bulan, nominal:jumlah, status, tgl_bayar:new Date().toISOString().split('T')[0]}]);
-  showToast('Pembayaran dicatat'); closeBayarModal(); await renderIuranTable();
+  
+  const parts = bulan.split('-');
+  let currentYear = parseInt(parts[0]);
+  let currentMonth = parseInt(parts[1]); // 1-indexed
+  
+  const promises = [];
+  const todayStr = new Date().toISOString().split('T')[0];
+  
+  for (let i = 0; i < durasi; i++) {
+    let m = currentMonth + i;
+    let y = currentYear + Math.floor((m - 1) / 12);
+    let mm = ((m - 1) % 12) + 1;
+    let targetBulan = `${y}-${String(mm).padStart(2, '0')}`;
+    
+    const existing = allIuran.find(item => item.warga_id == wargaId && item.bulan === targetBulan);
+    if (existing) {
+      promises.push(supabase.from('iuran').update({
+        status, 
+        nominal: jumlah, 
+        tgl_bayar: todayStr
+      }).eq('id', existing.id));
+    } else {
+      promises.push(supabase.from('iuran').insert([{
+        rt_id: currentRtId, 
+        warga_id: wargaId, 
+        bulan: targetBulan, 
+        nominal: jumlah, 
+        status, 
+        tgl_bayar: todayStr
+      }]));
+    }
+  }
+  
+  try {
+    const results = await Promise.all(promises);
+    const errorMsg = results.map(r => r.error?.message).filter(Boolean).join(', ');
+    if (errorMsg) {
+      showToast('Gagal mencatat sebagian/seluruh pembayaran: ' + errorMsg);
+    } else {
+      showToast('Pembayaran dicatat');
+    }
+  } catch (err) {
+    showToast('Terjadi kesalahan koneksi: ' + err.message);
+  }
+  
+  closeBayarModal(); 
+  await renderIuranTable();
 }
 
 function openCatatPembayaran(wargaId = '', bulan = '') {
@@ -3351,10 +3431,73 @@ function openCatatPembayaran(wargaId = '', bulan = '') {
   const targetBulan = bulan || currentBulan;
   document.getElementById('bayar-bulan').value = targetBulan;
   const existing = allIuran.find(i => i.warga_id == wargaId && i.bulan === targetBulan);
-  document.getElementById('bayar-jumlah').value = existing ? existing.nominal : (appSettings['nominal_iuran'] || 100000);
+  const iuranNominal = existing ? existing.nominal : (parseInt(appSettings['nominal_iuran']) || 100000);
+  
+  document.getElementById('bayar-jumlah').value = iuranNominal;
+  document.getElementById('bayar-durasi').value = 1;
+  
+  const updateTotalInfo = () => {
+    const durasi = parseInt(document.getElementById('bayar-durasi').value) || 1;
+    const nominal = parseInt(document.getElementById('bayar-jumlah').value) || 0;
+    document.getElementById('bayar-total-info').textContent = formatRupiah(durasi * nominal);
+  };
+  
+  document.getElementById('bayar-jumlah').oninput = updateTotalInfo;
+  document.getElementById('bayar-durasi').oninput = updateTotalInfo;
+  updateTotalInfo();
+  
   document.getElementById('bayar-modal').classList.add('open');
 }
+
 function closeBayarModal() { document.getElementById('bayar-modal').classList.remove('open'); }
+
+async function quickHandleMatrixClick(wargaId, bulanStr, currentStatus) {
+  if (currentStatus === 'belum') {
+    const iuranNominal = parseInt(appSettings['nominal_iuran']) || 100000;
+    const todayStr = new Date().toISOString().split('T')[0];
+    
+    const existing = allIuran.find(i => i.warga_id == wargaId && i.bulan === bulanStr);
+    let res;
+    if (existing) {
+      res = await supabase.from('iuran').update({
+        status: 'lunas',
+        nominal: iuranNominal,
+        tgl_bayar: todayStr
+      }).eq('id', existing.id);
+    } else {
+      res = await supabase.from('iuran').insert([{
+        rt_id: currentRtId,
+        warga_id: wargaId,
+        bulan: bulanStr,
+        nominal: iuranNominal,
+        status: 'lunas',
+        tgl_bayar: todayStr
+      }]);
+    }
+    if (res.error) {
+      showToast('Gagal mencatat pembayaran: ' + res.error.message);
+    } else {
+      showToast('Iuran dilunasi');
+      await renderIuranTable();
+    }
+  } else {
+    const existing = allIuran.find(i => i.warga_id == wargaId && i.bulan === bulanStr);
+    if (!existing) return;
+    
+    const confirmDelete = confirm(`Bulan ${bulanStr} sudah tercatat (${currentStatus.toUpperCase()}).\n\nKlik OK jika ingin MENGHAPUS pembayaran ini.\nKlik Batal/Cancel jika ingin MENGEDIT rincian pembayaran.`);
+    if (confirmDelete) {
+      const { error } = await supabase.from('iuran').delete().eq('id', existing.id);
+      if (error) {
+        showToast('Gagal menghapus pembayaran: ' + error.message);
+      } else {
+        showToast('Catatan pembayaran dihapus');
+        await renderIuranTable();
+      }
+    } else {
+      openCatatPembayaran(wargaId, bulanStr);
+    }
+  }
+}
 
 async function renderKasTable() {
   await loadKas();
