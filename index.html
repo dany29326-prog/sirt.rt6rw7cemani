@@ -3819,6 +3819,7 @@ async function doAdminLogin() {
       loadPollingData(),
       loadPengurus()
     ]).then(async()=>{
+      initIuranControls();
       await renderWargaTable(); 
       await renderIuranTable(); 
       await renderKasTable(); 
@@ -3890,6 +3891,7 @@ function showAdminPage(name,el){
   if (name === 'galeri') renderAdminGaleri();
   if (name === 'inventaris') renderAdminInventaris();
   if (name === 'pkk') initAdminPkk();
+  if (name === 'iuran') initIuranControls();
 
   // Close mobile sidebar if open
   const sidebar = document.querySelector('.sidebar');
