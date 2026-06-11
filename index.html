@@ -2896,7 +2896,11 @@ let currentRtId = null;
 let currentRtSubdomain = '';
 let currentRtName = '';
 
-let allWarga = [], filteredWarga = [], currentPage = 1, itemsPerPage = 10, currentBulan = '2025-06', allIuran = [], allKas = [], allPengumuman = [], allPengajuanSurat = [];
+const defaultInitDate = new Date();
+const defaultInitYear = defaultInitDate.getFullYear();
+const defaultInitMonth = String(defaultInitDate.getMonth() + 1).padStart(2, '0');
+
+let allWarga = [], filteredWarga = [], currentPage = 1, itemsPerPage = 10, currentBulan = `${defaultInitYear}-${defaultInitMonth}`, allIuran = [], allKas = [], allPengumuman = [], allPengajuanSurat = [];
 let appSettings = {};
 let allAgenda = [], filteredAgenda = [];
 let allPolling = [], allVotes = [];
@@ -2904,7 +2908,7 @@ let allPengurus = [];
 let allGaleri = [];
 let allInventaris = [], allPinjam = [], currentInventarisTab = 'barang';
 let currentIuranView = 'bulanan';
-let currentIuranYear = 2025;
+let currentIuranYear = defaultInitYear;
 let pubIuranChart = null, pubKasChart = null, admIuranChart = null, admKasChart = null;
 
 function escapeHtml(str) { if(!str) return ''; return str.replace(/[&<>]/g, function(m) { if(m==='&') return '&amp;'; if(m==='<') return '&lt;'; if(m==='>') return '&gt;'; return m; }); }
