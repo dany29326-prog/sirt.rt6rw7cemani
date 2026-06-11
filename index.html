@@ -2571,6 +2571,39 @@ td { padding:14px 16px; font-size:13px; border-bottom:1px solid var(--border); c
             </div>
           </div>
         </div>
+
+        <div class="card" style="padding: 24px; margin-top: 24px;">
+          <div class="card-header" style="padding: 0 0 16px 0; border-bottom: 1px solid var(--border); margin-bottom: 20px;">
+            <span class="card-title">👵 Iuran Khusus Warga (Lansia/Janda/dll.)</span>
+          </div>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px; align-items: end; margin-bottom: 24px;">
+            <div>
+              <label class="form-label" style="font-weight: 600; margin-bottom: 6px; display: block;">Pilih Keluarga / KK</label>
+              <select id="setelan-kustom-warga" style="width:100%; padding:11px 14px; border:1.5px solid var(--border); border-radius:10px; font-family:inherit; font-size:13px; outline:none;"></select>
+            </div>
+            <div style="display: flex; gap: 12px; align-items: end;">
+              <div style="flex: 1;">
+                <label class="form-label" style="font-weight: 600; margin-bottom: 6px; display: block;">Nominal Iuran Khusus (Rp)</label>
+                <input class="form-input" type="number" id="setelan-kustom-nominal" placeholder="Contoh: 10000" style="padding: 11px 14px;">
+              </div>
+              <button class="btn-save" onclick="simpanIuranKustom()" style="padding: 11px 20px; height: 43px;">➕ Terapkan</button>
+            </div>
+          </div>
+          <div class="table-responsive">
+            <table>
+              <thead>
+                <tr>
+                  <th style="text-align: left; padding-left: 12px;">Nama Kepala Keluarga</th>
+                  <th style="text-align: left;">Nominal Iuran Khusus</th>
+                  <th style="width: 80px; text-align: center;">Aksi</th>
+                </tr>
+              </thead>
+              <tbody id="setelan-kustom-list">
+                <tr><td colspan="3" style="text-align: center; color: var(--text-muted); padding: 16px;">Belum ada iuran khusus warga yang diatur</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -3296,6 +3329,20 @@ async function simpanWargaBaru() {
 
 async function hapusWarga(id) { if(!confirm('Yakin hapus?')) return; await supabase.from('warga').delete().eq('id',id); showToast('Warga dihapus'); await loadWarga(); filterWarga(); }
 
+function getNominalIuranWarga(wargaId) {
+  const defaultNominal = parseInt(appSettings['nominal_iuran']) || 20000;
+  if (!appSettings['iuran_kustom_warga']) return defaultNominal;
+  try {
+    const kustom = JSON.parse(appSettings['iuran_kustom_warga']);
+    if (kustom && kustom[wargaId] !== undefined) {
+      return parseInt(kustom[wargaId]) || defaultNominal;
+    }
+  } catch (e) {
+    console.error("Gagal parse iuran_kustom_warga:", e);
+  }
+  return defaultNominal;
+}
+
 async function renderIuranTable() {
   await loadIuran(); 
   await loadWarga();
@@ -3305,8 +3352,20 @@ async function renderIuranTable() {
   if (currentIuranView === 'bulanan') {
     const iuranBulan = allIuran.filter(i=>i.bulan===currentBulan);
     const data = allWarga.map(w=>{ const iuran = iuranBulan.find(i=>i.warga_id===w.id); return {...w, iuran_status: iuran?.status||'belum'}; });
-    const totalTerkumpul = data.filter(d=>d.iuran_status==='lunas').length*iuranNominal + data.filter(d=>d.iuran_status==='sebagian').length*iuranSebagian;
-    const totalTarget = allWarga.length*iuranNominal;
+    
+    let totalTerkumpul = 0;
+    let totalTarget = 0;
+    data.forEach(d => {
+      const nominalWarga = getNominalIuranWarga(d.id);
+      totalTarget += nominalWarga;
+      if (d.iuran_status === 'lunas') {
+        totalTerkumpul += nominalWarga;
+      } else if (d.iuran_status === 'sebagian') {
+        const payment = iuranBulan.find(i => i.warga_id === d.id);
+        totalTerkumpul += payment ? payment.nominal : Math.round(nominalWarga / 2);
+      }
+    });
+
     const elTerkumpul = document.getElementById('total-terkumpul');
     const elTarget = document.getElementById('total-target');
     if (elTerkumpul) elTerkumpul.innerHTML = formatRupiah(totalTerkumpul);
@@ -3328,6 +3387,7 @@ async function renderIuranTable() {
           let rowHtml = `<tr>
             <td style="text-align: left; padding-left: 12px; font-weight: 600; color: var(--text-muted);">${idx + 1}</td>
             <td style="text-align: left; font-weight: 700; color: var(--text-dark);">${escapeHtml(w.nama_kepala)}</td>`;
+          const nominalWarga = getNominalIuranWarga(w.id);
           for (let m = 1; m <= 12; m++) {
             const bulanStr = `${currentIuranYear}-${m.toString().padStart(2, '0')}`;
             const payment = allIuran.find(i => i.warga_id === w.id && i.bulan === bulanStr);
@@ -3337,11 +3397,11 @@ async function renderIuranTable() {
             if (status === 'lunas') {
               badgeClass = 'paid';
               label = '✓';
-              annualTerkumpul += iuranNominal;
+              annualTerkumpul += nominalWarga;
             } else if (status === 'sebagian') {
               badgeClass = 'partial';
               label = '½';
-              annualTerkumpul += payment.nominal || iuranSebagian;
+              annualTerkumpul += payment.nominal || Math.round(nominalWarga / 2);
             }
             rowHtml += `<td>
               <button class="matrix-status-btn ${badgeClass}" onclick="quickHandleMatrixClick('${w.id}', '${bulanStr}', '${status}')" title="${m}/${currentIuranYear}: ${status.toUpperCase()}">${label}</button>
@@ -3352,7 +3412,12 @@ async function renderIuranTable() {
         }).join('');
       }
     }
-    const annualTarget = allWarga.length * 12 * iuranNominal;
+    
+    let annualTarget = 0;
+    allWarga.forEach(w => {
+      annualTarget += getNominalIuranWarga(w.id) * 12;
+    });
+    
     const elAnnTerkumpul = document.getElementById('annual-total-terkumpul');
     const elAnnTarget = document.getElementById('annual-total-target');
     if (elAnnTerkumpul) elAnnTerkumpul.innerHTML = formatRupiah(annualTerkumpul);
@@ -3373,7 +3438,7 @@ async function simpanPembayaran() {
         
   if(!wargaId||!bulan) { showToast('Lengkapi data'); return; }
   
-  const iuranNominal = parseInt(appSettings['nominal_iuran']) || 100000;
+  const iuranNominal = getNominalIuranWarga(wargaId);
   const status = jumlah>=iuranNominal?'lunas':(jumlah>0?'sebagian':'belum');
   
   const parts = bulan.split('-');
@@ -3431,7 +3496,7 @@ function openCatatPembayaran(wargaId = '', bulan = '') {
   const targetBulan = bulan || currentBulan;
   document.getElementById('bayar-bulan').value = targetBulan;
   const existing = allIuran.find(i => i.warga_id == wargaId && i.bulan === targetBulan);
-  const iuranNominal = existing ? existing.nominal : (parseInt(appSettings['nominal_iuran']) || 100000);
+  const iuranNominal = existing ? existing.nominal : getNominalIuranWarga(wargaId);
   
   document.getElementById('bayar-jumlah').value = iuranNominal;
   document.getElementById('bayar-durasi').value = 1;
@@ -3440,6 +3505,20 @@ function openCatatPembayaran(wargaId = '', bulan = '') {
     const durasi = parseInt(document.getElementById('bayar-durasi').value) || 1;
     const nominal = parseInt(document.getElementById('bayar-jumlah').value) || 0;
     document.getElementById('bayar-total-info').textContent = formatRupiah(durasi * nominal);
+  };
+  
+  select.onchange = () => {
+    const selectedWargaId = select.value;
+    const existingPayment = allIuran.find(i => i.warga_id == selectedWargaId && i.bulan === document.getElementById('bayar-bulan').value);
+    document.getElementById('bayar-jumlah').value = existingPayment ? existingPayment.nominal : getNominalIuranWarga(selectedWargaId);
+    updateTotalInfo();
+  };
+
+  document.getElementById('bayar-bulan').onchange = () => {
+    const selectedWargaId = select.value;
+    const existingPayment = allIuran.find(i => i.warga_id == selectedWargaId && i.bulan === document.getElementById('bayar-bulan').value);
+    document.getElementById('bayar-jumlah').value = existingPayment ? existingPayment.nominal : getNominalIuranWarga(selectedWargaId);
+    updateTotalInfo();
   };
   
   document.getElementById('bayar-jumlah').oninput = updateTotalInfo;
@@ -3453,7 +3532,7 @@ function closeBayarModal() { document.getElementById('bayar-modal').classList.re
 
 async function quickHandleMatrixClick(wargaId, bulanStr, currentStatus) {
   if (currentStatus === 'belum') {
-    const iuranNominal = parseInt(appSettings['nominal_iuran']) || 100000;
+    const iuranNominal = getNominalIuranWarga(wargaId);
     const todayStr = new Date().toISOString().split('T')[0];
     
     const existing = allIuran.find(i => i.warga_id == wargaId && i.bulan === bulanStr);
@@ -3977,6 +4056,110 @@ async function populateSettingsInputs() {
   const rekeningTextarea = document.getElementById('setelan-rekening');
   if (nominalInput) nominalInput.value = appSettings['nominal_iuran'] || '100000';
   if (rekeningTextarea) rekeningTextarea.value = appSettings['rekening_pembayaran'] || '';
+  await renderIuranKustomList();
+}
+
+async function renderIuranKustomList() {
+  const select = document.getElementById('setelan-kustom-warga');
+  const tbody = document.getElementById('setelan-kustom-list');
+  if (!select || !tbody) return;
+  
+  if (allWarga.length === 0) {
+    await loadWarga();
+  }
+  
+  select.innerHTML = '<option value="">Pilih Warga</option>' + allWarga.map(w => `<option value="${w.id}">${escapeHtml(w.nama_kepala)}</option>`).join('');
+  
+  let kustom = {};
+  if (appSettings['iuran_kustom_warga']) {
+    try {
+      kustom = JSON.parse(appSettings['iuran_kustom_warga']);
+    } catch (e) {
+      console.error(e);
+    }
+  }
+  
+  const keys = Object.keys(kustom);
+  if (keys.length === 0) {
+    tbody.innerHTML = `<tr><td colspan="3" style="text-align: center; color: var(--text-muted); padding: 16px;">Belum ada iuran khusus warga yang diatur</td></tr>`;
+  } else {
+    tbody.innerHTML = keys.map(wargaId => {
+      const w = allWarga.find(item => item.id == wargaId);
+      const name = w ? escapeHtml(w.nama_kepala) : `Warga ID ${wargaId} (Dihapus)`;
+      return `<tr>
+        <td style="text-align: left; padding-left: 12px; font-weight:600;">${name}</td>
+        <td style="text-align: left; font-family:'DM Mono', monospace; font-weight:700; color:var(--text-dark);">${formatRupiah(kustom[wargaId])}</td>
+        <td style="text-align: center;"><button class="icon-btn danger" onclick="hapusIuranKustom('${wargaId}')">🗑️</button></td>
+      </tr>`;
+    }).join('');
+  }
+}
+
+async function simpanIuranKustom() {
+  const wargaId = document.getElementById('setelan-kustom-warga')?.value;
+  const nominalStr = document.getElementById('setelan-kustom-nominal')?.value;
+  if (!wargaId || !nominalStr) {
+    showToast('Pilih warga dan tentukan nominal iuran khusus');
+    return;
+  }
+  const nominal = parseInt(nominalStr) || 0;
+  
+  let kustom = {};
+  if (appSettings['iuran_kustom_warga']) {
+    try {
+      kustom = JSON.parse(appSettings['iuran_kustom_warga']);
+    } catch (e) {
+      console.error(e);
+    }
+  }
+  
+  kustom[wargaId] = nominal;
+  
+  const { error } = await supabase.from('setelan').upsert({
+    rt_id: currentRtId,
+    kunci: 'iuran_kustom_warga',
+    nilai: JSON.stringify(kustom)
+  }, { onConflict: 'rt_id,kunci' });
+  
+  if (error) {
+    showToast('Gagal menyimpan iuran khusus: ' + error.message);
+  } else {
+    showToast('Iuran khusus berhasil disimpan!');
+    document.getElementById('setelan-kustom-nominal').value = '';
+    await loadSettings();
+    await renderIuranKustomList();
+    await renderIuranTable();
+  }
+}
+
+async function hapusIuranKustom(wargaId) {
+  if (!confirm('Yakin ingin menghapus iuran khusus warga ini? (Tarif akan kembali ke nominal standar RT)')) return;
+  
+  let kustom = {};
+  if (appSettings['iuran_kustom_warga']) {
+    try {
+      kustom = JSON.parse(appSettings['iuran_kustom_warga']);
+    } catch (e) {
+      console.error(e);
+    }
+  }
+  
+  delete kustom[wargaId];
+  
+  const { error } = await supabase.from('setelan').upsert({
+    rt_id: currentRtId,
+    kunci: 'iuran_kustom_warga',
+    nilai: JSON.stringify(kustom)
+  }, { onConflict: 'rt_id,kunci' });
+  
+  if (error) {
+    showToast('Gagal menghapus iuran khusus: ' + error.message);
+  } else {
+    showToast('Iuran khusus dihapus');
+    await loadSettings();
+    await renderIuranKustomList();
+    await renderIuranTable();
+  }
 }
 
 async function simpanSetelanParameter() {
