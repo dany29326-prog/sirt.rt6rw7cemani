@@ -3686,11 +3686,27 @@ async function renderSuratTable() {
           <button class="btn-sm solid" onclick="updateStatusSurat(${s.id}, 'selesai')" style="padding:2px 6px;font-size:10px;">Setujui</button>
           <button class="btn-sm outline" onclick="updateStatusSurat(${s.id}, 'ditolak')" style="padding:2px 6px;font-size:10px;">Tolak</button>
           ${s.status === 'selesai' ? `<button class="btn-sm solid" onclick="cetakSurat(${s.id})" style="padding:2px 6px;font-size:10px;background:#3b82f6;border-color:#3b82f6;">🖨️ Cetak</button>` : ''}
+          ${s.status !== 'proses' ? `<button class="btn-sm solid" onclick="kirimKabarWA(${s.id})" style="padding:2px 6px;font-size:10px;background:#10b981;border-color:#10b981;color:#fff;">📲 Kabari</button>` : ''}
           <button class="icon-btn danger" onclick="hapusSurat(${s.id})" style="width:20px;height:20px;font-size:10px;display:flex;align-items:center;justify-content:center;">🗑️</button>
         </div>
       </td>
     </tr>`;
   }).join('') || '<tr><td colspan="4">Belum ada pengajuan</td></tr>';
+}
+
+function kirimKabarWA(id) {
+  const surat = allPengajuanSurat.find(s => s.id === id);
+  if (!surat || !surat.no_wa) {
+    showToast('Nomor WA tidak tersedia');
+    return;
+  }
+  let pesan = '';
+  if (surat.status === 'selesai') {
+    pesan = `Halo Bapak/Ibu *${surat.nama_pemohon}*,\n\nPengajuan surat pengantar *${surat.jenis_surat}* Anda telah *DISETUJUI* oleh Ketua RT. Surat fisik sudah siap dicetak/diambil di rumah Ketua RT.\n\nTerima kasih.`;
+  } else if (surat.status === 'ditolak') {
+    pesan = `Halo Bapak/Ibu *${surat.nama_pemohon}*,\n\nMohon maaf pengajuan surat pengantar *${surat.jenis_surat}* Anda *BELUM DISETUJUI* oleh Ketua RT karena alasan tertentu. Silakan hubungi pengurus RT untuk informasi lebih lanjut.\n\nTerima kasih.`;
+  }
+  window.open(`https://wa.me/${surat.no_wa.replace(/[^0-9]/g,'')}?text=${encodeURIComponent(pesan)}`, '_blank');
 }
 
 async function updateStatusSurat(id, status) {
